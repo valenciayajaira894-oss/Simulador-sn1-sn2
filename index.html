@@ -1,0 +1,1565 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SN1 VS SN2: REACTION RACE</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700&family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        /* ==========================================================================
+           1. CONFIGURACIÓN VISUAL EDITABLE (CSS)
+           ========================================================================== */
+        :root {
+            /* Palette Configuration */
+            --color-sn1: #F4B6C2;          /* Soft Pastel Pink */
+            --color-sn1-alt: #C9B6E4;      /* Soft Pastel Lila */
+            --color-sn2: #AFCBFF;          /* Soft Pastel Blue */
+            --color-sn2-alt: #B8D8C0;      /* Soft Pastel Green */
+            --color-finish: #F6DFA6;       /* Pastel Gold / Yellow */
+            --bg-warm: #FFFDF9;            /* Warm Off-White */
+            --color-card-bg: #FFFFFF;
+            --color-text: #3F3A45;          /* Main Deep Charcoal */
+            --color-text-sec: #666666;      /* Muted Charcoal */
+            --color-correct: #93C5FD;       /* Soft Blue-Green Green tone */
+            --color-correct-bg: #E0F2FE;
+            --color-wrong: #FCA5A5;         /* Soft Coral Red */
+            --color-wrong-bg: #FEF2F2;
+            --color-accent: #C9B6E4;
+            --color-track: #EFE8E1;
+
+            /* Visual Layout Values */
+            --font-family: 'Nunito', sans-serif;
+            --font-heading: 'Fredoka', sans-serif;
+            --border-radius-lg: 24px;
+            --border-radius-md: 16px;
+            --border-radius-sm: 10px;
+            --box-shadow-soft: 0 10px 30px -5px rgba(63, 58, 69, 0.08);
+            --box-shadow-hover: 0 15px 35px -5px rgba(63, 58, 69, 0.12);
+            --car-speed: 0.8s;
+        }
+
+        body {
+            font-family: var(--font-family);
+            background-color: var(--bg-warm);
+            color: var(--color-text);
+            margin: 0;
+            padding: 0;
+            overflow-x: hidden;
+            background-image: 
+                radial-gradient(circle at 10% 20%, rgba(244, 182, 194, 0.15) 0%, transparent 20%),
+                radial-gradient(circle at 90% 80%, rgba(175, 203, 255, 0.15) 0%, transparent 20%),
+                radial-gradient(circle at 50% 50%, rgba(201, 182, 228, 0.1) 0%, transparent 50%);
+            background-attachment: fixed;
+        }
+
+        h1, h2, h3, h4, .font-heading {
+            font-family: var(--font-heading);
+        }
+
+        /* Glassmorphic card utility */
+        .glass-card {
+            background: rgba(255, 255, 255, 0.88);
+            backdrop-filter: blur(12px);
+            border: 2px solid rgba(255, 255, 255, 0.9);
+            border-radius: var(--border-radius-lg);
+            box-shadow: var(--box-shadow-soft);
+            transition: all 0.3s ease;
+        }
+
+        .glass-card:hover {
+            box-shadow: var(--box-shadow-hover);
+        }
+
+        /* Buttons */
+        .btn-custom {
+            border-radius: var(--border-radius-md);
+            font-family: var(--font-heading);
+            font-weight: 600;
+            transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+            cursor: pointer;
+            user-select: none;
+        }
+
+        .btn-custom:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 16px rgba(0,0,0,0.1);
+        }
+
+        .btn-custom:active {
+            transform: translateY(1px);
+        }
+
+        .btn-sn1 {
+            background-color: var(--color-sn1);
+            color: #3F3A45;
+        }
+        .btn-sn1:hover {
+            background-color: #f1a0b1;
+        }
+
+        .btn-sn2 {
+            background-color: var(--color-sn2);
+            color: #3F3A45;
+        }
+        .btn-sn2:hover {
+            background-color: #92b8ff;
+        }
+
+        .btn-accent {
+            background-color: var(--color-sn1-alt);
+            color: #3F3A45;
+        }
+
+        /* Race Track Styles */
+        .track-container {
+            background: linear-gradient(180deg, #F9F5F0 0%, #EFE8E1 100%);
+            border: 3px solid #E2D9CF;
+            border-radius: var(--border-radius-lg);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .track-lane {
+            position: relative;
+            height: 105px;
+            border-bottom: 2px dashed #D6C9BC;
+        }
+
+        .track-lane:last-child {
+            border-bottom: none;
+        }
+
+        .finish-line {
+            position: absolute;
+            right: 40px;
+            top: 0;
+            bottom: 0;
+            width: 24px;
+            background: repeating-linear-gradient(
+                45deg,
+                var(--color-finish),
+                var(--color-finish) 10px,
+                #FFFFFF 10px,
+                #FFFFFF 20px
+            );
+            border-left: 2px solid #E2C784;
+            border-right: 2px solid #E2C784;
+            z-index: 10;
+        }
+
+        .finish-flag {
+            position: absolute;
+            right: 32px;
+            top: -25px;
+            font-size: 24px;
+            z-index: 11;
+        }
+
+        /* Car Elements */
+        .car-wrapper {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            left: 10px;
+            transition: left var(--car-speed) cubic-bezier(0.34, 1.4, 0.64, 1);
+            z-index: 20;
+            will-change: left;
+        }
+
+        .car-badge {
+            position: absolute;
+            top: -22px;
+            left: 50%;
+            transform: translateX(-50%) scale(0);
+            background: #3F3A45;
+            color: #FFFDF9;
+            padding: 2px 10px;
+            border-radius: 12px;
+            font-size: 11px;
+            font-weight: 800;
+            white-space: nowrap;
+            opacity: 0;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.15);
+        }
+
+        .car-badge.show {
+            transform: translateX(-50%) scale(1);
+            opacity: 1;
+        }
+
+        /* Speed Trail & Motion Animation for Cars */
+        @keyframes pulse-car {
+            0% { filter: drop-shadow(0 4px 6px rgba(0,0,0,0.15)); }
+            50% { filter: drop-shadow(0 8px 18px rgba(244, 182, 194, 0.8)); transform: translateY(-52%) scale(1.03); }
+            100% { filter: drop-shadow(0 4px 6px rgba(0,0,0,0.15)); }
+        }
+
+        .car-moving {
+            animation: pulse-car 0.4s infinite ease-in-out;
+        }
+
+        /* Speed trail glow line behind moving cars */
+        .car-wrapper::before {
+            content: '';
+            position: absolute;
+            left: -35px;
+            top: 50%;
+            width: 35px;
+            height: 6px;
+            border-radius: 10px;
+            background: linear-gradient(90deg, transparent, rgba(244, 182, 194, 0.8));
+            opacity: 0;
+            transition: opacity 0.3s ease;
+            transform: translateY(-50%);
+        }
+
+        #carSN2::before {
+            background: linear-gradient(90deg, transparent, rgba(175, 203, 255, 0.8));
+        }
+
+        .car-moving::before {
+            opacity: 1;
+        }
+
+        /* SVG Molecule Background Floating Icons */
+        .floating-mol {
+            position: absolute;
+            opacity: 0.12;
+            pointer-events: none;
+            z-index: 0;
+            animation: float 12s infinite ease-in-out;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0) rotate(0deg); }
+            50% { transform: translateY(-15px) rotate(10deg); }
+        }
+
+        /* Custom Quiz Options */
+        .quiz-option {
+            background: #FFFFFF;
+            border: 2px solid #EFE8E1;
+            border-radius: var(--border-radius-md);
+            padding: 14px 20px;
+            text-align: left;
+            transition: all 0.2s ease;
+            cursor: pointer;
+            width: 100%;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .quiz-option:hover:not(.disabled) {
+            border-color: var(--color-sn1-alt);
+            background: #FAF8FC;
+            transform: translateX(4px);
+        }
+
+        .quiz-option.selected {
+            border-color: var(--color-sn1-alt);
+            background-color: #F3EEF9;
+            box-shadow: 0 0 0 3px rgba(201, 182, 228, 0.4);
+        }
+
+        .quiz-option.correct {
+            border-color: #34D399 !important;
+            background-color: #ECFDF5 !important;
+            color: #065F46 !important;
+        }
+
+        .quiz-option.wrong {
+            border-color: #F87171 !important;
+            background-color: #FEF2F2 !important;
+            color: #991B1B !important;
+        }
+
+        /* Tooltip style */
+        .edu-card {
+            background: #FFFFFF;
+            border-radius: var(--border-radius-md);
+            border-left: 5px solid var(--color-sn1-alt);
+            box-shadow: var(--box-shadow-soft);
+            transition: all 0.3s ease;
+        }
+        .edu-card:hover {
+            transform: translateY(-3px);
+        }
+
+        /* Smooth tab/screen transition */
+        .screen {
+            display: none;
+            opacity: 0;
+            transition: opacity 0.4s ease-in-out;
+        }
+        .screen.active {
+            display: block;
+            opacity: 1;
+        }
+
+        /* Sound toggle button */
+        .sound-btn {
+            position: fixed;
+            top: 16px;
+            right: 16px;
+            z-index: 100;
+            background: #FFFFFF;
+            border: 2px solid #EFE8E1;
+            border-radius: 50%;
+            width: 48px;
+            height: 48px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+            cursor: pointer;
+            font-size: 20px;
+            transition: all 0.2s ease;
+        }
+
+        .sound-btn:hover {
+            transform: scale(1.08);
+        }
+
+        /* Mechanism Animation Containers */
+        .anim-box {
+            min-height: 140px;
+            background: #FFFDF9;
+            border: 2px dashed #E2D9CF;
+            border-radius: var(--border-radius-md);
+        }
+    </style>
+</head>
+<body class="relative min-h-screen pb-12">
+
+    <!-- Sound Toggle Floating Button -->
+    <button id="soundToggleBtn" class="sound-btn" title="Activar/Silenciar Sonido" onclick="toggleAudio()">
+        <span id="soundIcon">🔊</span>
+    </button>
+
+    <!-- Floating Chemistry SVG Background Decorations -->
+    <svg class="floating-mol" style="top: 10%; left: 5%; width: 120px;" viewBox="0 0 100 100" fill="#F4B6C2">
+        <path d="M30 20 L70 20 L90 55 L70 90 L30 90 L10 55 Z" stroke="#3F3A45" stroke-width="4" fill="none"/>
+        <circle cx="30" cy="20" r="8" />
+        <circle cx="70" cy="20" r="8" />
+        <circle cx="90" cy="55" r="8" />
+    </svg>
+    <svg class="floating-mol" style="top: 60%; right: 4%; width: 140px; animation-delay: -5s;" viewBox="0 0 100 100" fill="#AFCBFF">
+        <line x1="20" y1="50" x2="80" y2="50" stroke="#3F3A45" stroke-width="6"/>
+        <circle cx="20" cy="50" r="14" fill="#AFCBFF" />
+        <circle cx="80" cy="50" r="10" fill="#F4B6C2" />
+    </svg>
+
+    <!-- ==========================================================================
+       5. PANTALLA INICIAL (WELCOME SCREEN)
+       ========================================================================== -->
+    <div id="welcomeScreen" class="screen active max-w-4xl mx-auto px-4 pt-8 pb-12">
+        
+        <!-- Discreet Project Information Header -->
+        <div class="glass-card p-4 mb-8 text-xs sm:text-sm text-center flex flex-wrap justify-around gap-2 text-gray-600 border-b-4 border-purple-200">
+            <div><span class="font-bold text-gray-700">Institución:</span> CEUNI</div>
+            <div><span class="font-bold text-gray-700">Estudiante:</span> Yajaira Garcia Valencia</div>
+            <div><span class="font-bold text-gray-700">Docente:</span> Luis Eduardo Ek León</div>
+            <div><span class="font-bold text-gray-700">Asignatura:</span> Química Orgánica III</div>
+            <div><span class="font-bold text-gray-700">Fecha:</span> 05 de octubre de 2026</div>
+        </div>
+
+        <div class="glass-card p-8 md:p-12 text-center relative overflow-hidden">
+            <div class="inline-block px-4 py-1.5 rounded-full bg-purple-100 text-purple-800 text-xs font-bold tracking-wider uppercase mb-4">
+                Simulador Educativo de Química Orgánica
+            </div>
+
+            <h1 class="text-4xl md:text-6xl font-black tracking-tight mb-2 text-gray-800">
+                <span class="text-pink-400">SN1</span> <span class="text-gray-400 text-3xl md:text-5xl">VS</span> <span class="text-blue-400">SN2</span>
+            </h1>
+            <h2 class="text-2xl md:text-3xl font-extrabold text-purple-600 mb-6 tracking-wide">
+                REACTION RACE
+            </h2>
+
+            <p class="max-w-2xl mx-auto text-gray-600 text-base md:text-lg mb-8 leading-relaxed">
+                “Analiza, compara y simula el comportamiento cinético y estereoquímico de las reacciones de sustitución nucleófila unimolecular (<strong class="text-pink-500">SN1</strong>) y bimolecular (<strong class="text-blue-500">SN2</strong>), observando cómo los factores estructurales y ambientales favorecen cada mecanismo.”
+            </p>
+
+            <!-- Decorative Visual Preview of the Two Girly Sports Race Cars -->
+            <div class="flex justify-center items-center gap-6 md:gap-12 my-8 p-6 bg-amber-50/50 rounded-2xl border border-amber-100">
+                <!-- Preview Car SN1 -->
+                <div class="text-center">
+                    <div class="w-32 h-16 mx-auto flex items-center justify-center filter drop-shadow-md">
+                        <svg width="120" height="55" viewBox="0 0 130 60">
+                            <!-- Shadow -->
+                            <ellipse cx="65" cy="54" rx="55" ry="4" fill="rgba(63,58,69,0.2)" />
+                            <!-- Spoiler -->
+                            <path d="M 12 18 L 22 18 L 18 28 L 8 28 Z" fill="#E27D9A" />
+                            <rect x="15" y="28" width="3" height="10" fill="#3F3A45" />
+                            <!-- Main Aerodynamic Body -->
+                            <path d="M 10 38 Q 20 22 45 18 Q 75 16 100 28 L 122 36 Q 128 40 122 46 L 15 46 Q 8 44 10 38 Z" fill="url(#sn1BodyGradPrev)" stroke="#E27D9A" stroke-width="1.5" />
+                            <defs>
+                                <linearGradient id="sn1BodyGradPrev" x1="0" y1="0" x2="1" y2="1">
+                                    <stop offset="0%" stop-color="#FFF8FB" />
+                                    <stop offset="50%" stop-color="#F4B6C2" />
+                                    <stop offset="100%" stop-color="#C9B6E4" />
+                                </linearGradient>
+                            </defs>
+                            <!-- Cockpit Glass -->
+                            <path d="M 40 20 Q 62 18 80 28 L 42 28 Z" fill="#3F3A45" opacity="0.75" />
+                            <path d="M 45 22 Q 60 20 72 27 L 47 27 Z" fill="#AFCBFF" opacity="0.4" />
+                            <!-- Decals: Bow & Flowers -->
+                            <path d="M 28 32 C 26 30, 24 34, 28 35 C 32 34, 30 30, 28 32 Z" fill="#E27D9A" />
+                            <circle cx="28" cy="33.5" r="1" fill="#FFFFFF" />
+                            <path d="M 85 34 Q 87 31 89 34 Q 92 36 89 38 Q 87 41 85 38 Q 82 36 85 34 Z" fill="#FFF8FB" opacity="0.9" />
+                            <circle cx="87" cy="36" r="1" fill="#E27D9A" />
+                            <!-- Label "SN1" -->
+                            <text x="56" y="41" font-family="'Fredoka', sans-serif" font-size="10" font-weight="900" fill="#3F3A45">SN1</text>
+                            <!-- Wheels -->
+                            <circle cx="32" cy="46" r="9" fill="#2A2630" />
+                            <circle cx="32" cy="46" r="5" fill="#E2D9CF" stroke="#F4B6C2" stroke-width="1.5" />
+                            <circle cx="98" cy="46" r="9" fill="#2A2630" />
+                            <circle cx="98" cy="46" r="5" fill="#E2D9CF" stroke="#F4B6C2" stroke-width="1.5" />
+                            <!-- Headlight Sparkle -->
+                            <path d="M 120 38 Q 125 39 122 41 Z" fill="#FFFDF9" />
+                            <circle cx="123" cy="39" r="2" fill="#F6DFA6" />
+                        </svg>
+                    </div>
+                    <span class="text-xs font-bold text-pink-500 mt-2 block">SN1 Girly Racer</span>
+                </div>
+
+                <div class="text-2xl font-black text-amber-400">VS</div>
+
+                <!-- Preview Car SN2 -->
+                <div class="text-center">
+                    <div class="w-32 h-16 mx-auto flex items-center justify-center filter drop-shadow-md">
+                        <svg width="120" height="55" viewBox="0 0 130 60">
+                            <!-- Shadow -->
+                            <ellipse cx="65" cy="54" rx="55" ry="4" fill="rgba(63,58,69,0.2)" />
+                            <!-- Spoiler -->
+                            <path d="M 12 18 L 22 18 L 18 28 L 8 28 Z" fill="#88B04B" />
+                            <rect x="15" y="28" width="3" height="10" fill="#3F3A45" />
+                            <!-- Main Aerodynamic Body -->
+                            <path d="M 10 38 Q 20 22 45 18 Q 75 16 100 28 L 122 36 Q 128 40 122 46 L 15 46 Q 8 44 10 38 Z" fill="url(#sn2BodyGradPrev)" stroke="#82A6B1" stroke-width="1.5" />
+                            <defs>
+                                <linearGradient id="sn2BodyGradPrev" x1="0" y1="0" x2="1" y2="1">
+                                    <stop offset="0%" stop-color="#F0FAF8" />
+                                    <stop offset="50%" stop-color="#AFCBFF" />
+                                    <stop offset="100%" stop-color="#B8D8C0" />
+                                </linearGradient>
+                            </defs>
+                            <!-- Cockpit Glass -->
+                            <path d="M 40 20 Q 62 18 80 28 L 42 28 Z" fill="#3F3A45" opacity="0.75" />
+                            <path d="M 45 22 Q 60 20 72 27 L 47 27 Z" fill="#F4B6C2" opacity="0.4" />
+                            <!-- Decals: Blossom Flowers -->
+                            <path d="M 85 33 Q 87 30 89 33 Q 92 35 89 37 Q 87 40 85 37 Q 82 35 85 33 Z" fill="#FFFFFF" opacity="0.95" />
+                            <circle cx="87" cy="35" r="1" fill="#F6DFA6" />
+                            <path d="M 28 32 C 26 30, 24 34, 28 35 C 32 34, 30 30, 28 32 Z" fill="#D8C2F0" />
+                            <!-- Label "SN2" -->
+                            <text x="56" y="41" font-family="'Fredoka', sans-serif" font-size="10" font-weight="900" fill="#3F3A45">SN2</text>
+                            <!-- Wheels -->
+                            <circle cx="32" cy="46" r="9" fill="#2A2630" />
+                            <circle cx="32" cy="46" r="5" fill="#E2D9CF" stroke="#AFCBFF" stroke-width="1.5" />
+                            <circle cx="98" cy="46" r="9" fill="#2A2630" />
+                            <circle cx="98" cy="46" r="5" fill="#E2D9CF" stroke="#AFCBFF" stroke-width="1.5" />
+                            <!-- Headlight Sparkle -->
+                            <path d="M 120 38 Q 125 39 122 41 Z" fill="#FFFDF9" />
+                            <circle cx="123" cy="39" r="2" fill="#F6DFA6" />
+                        </svg>
+                    </div>
+                    <span class="text-xs font-bold text-blue-500 mt-2 block">SN2 Mint Racer</span>
+                </div>
+            </div>
+
+            <!-- Start Button -->
+            <button onclick="startSimulation()" class="btn-custom bg-purple-300 hover:bg-purple-400 text-gray-800 text-xl px-10 py-4 rounded-2xl shadow-lg hover:shadow-xl transform transition hover:-translate-y-1">
+                🏎️ INICIAR SIMULACIÓN
+            </button>
+        </div>
+    </div>
+
+
+    <!-- ==========================================================================
+       6. ESTRUCTURA PRINCIPAL DE LA SIMULACIÓN
+       ========================================================================== -->
+    <div id="simulationScreen" class="screen max-w-5xl mx-auto px-4 py-6 space-y-8">
+        
+        <!-- Header Info Bar -->
+        <div class="glass-card px-6 py-3 flex justify-between items-center text-xs md:text-sm text-gray-600">
+            <div><strong>SN1 vs SN2: Reaction Race</strong> | Química Orgánica III</div>
+            <div class="font-semibold text-purple-700">CEUNI - Yajaira Garcia Valencia</div>
+        </div>
+
+        <!-- ==========================================================================
+           7. PISTA DE CARRERA
+           ========================================================================== -->
+        <section class="glass-card p-6 border-2 border-purple-100">
+            <div class="flex justify-between items-center mb-4">
+                <h2 class="text-xl md:text-2xl font-bold text-gray-800 flex items-center gap-2">
+                    <span>🏎️</span> PISTA DE CARRERA
+                </h2>
+                <div class="text-xs font-semibold px-3 py-1 bg-amber-100 text-amber-800 rounded-full">
+                    Llegada a Meta: Posición 10
+                </div>
+            </div>
+
+            <!-- Track Box -->
+            <div class="track-container p-2">
+                <!-- Meta Line Banner -->
+                <div class="finish-flag">🏁</div>
+                <div class="finish-line"></div>
+
+                <!-- LANE 1: SN1 -->
+                <div class="track-lane flex items-center">
+                    <div class="absolute left-3 text-xs font-bold text-pink-600 bg-pink-100 px-2 py-0.5 rounded z-10 shadow-sm">
+                        CARRIL SN1 🎀
+                    </div>
+
+                    <!-- SN1 Car Vector (Pink / Lila Girly Sports Race Car) -->
+                    <div id="carSN1" class="car-wrapper">
+                        <div id="badgeSN1" class="car-badge">+1</div>
+                        <div class="w-32 h-16 flex items-center justify-center filter drop-shadow-md">
+                            <svg width="130" height="60" viewBox="0 0 130 60">
+                                <defs>
+                                    <!-- Pearl Metallic Gradient for SN1 Body -->
+                                    <linearGradient id="sn1BodyGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+                                        <stop offset="0%" stop-color="#FFF8FB" />
+                                        <stop offset="45%" stop-color="#F4B6C2" />
+                                        <stop offset="80%" stop-color="#E27D9A" />
+                                        <stop offset="100%" stop-color="#C9B6E4" />
+                                    </linearGradient>
+                                    <linearGradient id="sn1GlassGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+                                        <stop offset="0%" stop-color="#3F3A45" />
+                                        <stop offset="70%" stop-color="#1A181D" />
+                                    </linearGradient>
+                                </defs>
+
+                                <!-- Car Drop Shadow -->
+                                <ellipse cx="65" cy="54" rx="56" ry="4" fill="rgba(63,58,69,0.25)" />
+
+                                <!-- Rear Sport Spoiler -->
+                                <path d="M 10 16 L 22 16 L 18 28 L 6 28 Z" fill="#E27D9A" stroke="#B85270" stroke-width="0.8" />
+                                <rect x="14" y="28" width="3.5" height="11" fill="#3F3A45" />
+
+                                <!-- Aerodynamic Low-Profile Car Body -->
+                                <path d="M 8 38 Q 18 20 45 16 Q 78 14 102 26 L 123 35 Q 129 40 123 46 L 12 46 Q 6 44 8 38 Z" fill="url(#sn1BodyGrad)" stroke="#E27D9A" stroke-width="1.5" />
+
+                                <!-- Tinted Curved Cockpit Window -->
+                                <path d="M 38 18 Q 62 16 82 26 L 40 26 Z" fill="url(#sn1GlassGrad)" opacity="0.85" />
+                                <path d="M 43 20 Q 60 18 74 25 L 45 25 Z" fill="#C9B6E4" opacity="0.45" />
+
+                                <!-- Side Air Intake Vents -->
+                                <path d="M 50 36 L 62 36 L 58 41 L 48 41 Z" fill="rgba(63,58,69,0.15)" />
+
+                                <!-- Decals 1: Ribbons / Bows 🎀 on Side & Near Spoiler -->
+                                <g id="sn1BowDecalSide" transform="translate(24, 30)">
+                                    <path d="M 0 2 C -4 -2, -6 6, 0 3 C 6 6, 4 -2, 0 2 Z" fill="#E27D9A" />
+                                    <path d="M -1 3 L -4 9 L -1 7 L 1 9 L 0 3 Z" fill="#E27D9A" />
+                                    <circle cx="0" cy="2.5" r="1.2" fill="#FFFFFF" />
+                                </g>
+
+                                <!-- Decals 2: Flowers 🌸 on Hood -->
+                                <g id="sn1FlowerDecalHood" transform="translate(88, 33)">
+                                    <circle cx="-2" cy="0" r="1.8" fill="#FFF8FB" />
+                                    <circle cx="2" cy="0" r="1.8" fill="#FFF8FB" />
+                                    <circle cx="0" cy="-2" r="1.8" fill="#FFF8FB" />
+                                    <circle cx="0" cy="2" r="1.8" fill="#FFF8FB" />
+                                    <circle cx="0" cy="0" r="1.5" fill="#F6DFA6" />
+                                </g>
+
+                                <!-- Decals 3: Cute Heart Accent ❤️ -->
+                                <path d="M 108 36 C 108 34, 105 34, 105 36 C 105 38, 108 40, 108 40 C 108 40, 111 38, 111 36 C 111 34, 108 34, 108 36 Z" fill="#FFF8FB" opacity="0.9" />
+
+                                <!-- "SN1" Driver Racing Plate -->
+                                <rect x="52" y="31" width="24" height="11" rx="3" fill="#FFFDF9" stroke="#E27D9A" stroke-width="1" />
+                                <text x="64" y="39.5" font-family="'Fredoka', sans-serif" font-size="9" font-weight="900" fill="#3F3A45" text-anchor="middle">SN1</text>
+
+                                <!-- Rear Alloy Wheel & Rim -->
+                                <circle cx="32" cy="46" r="9.5" fill="#2A2630" />
+                                <circle cx="32" cy="46" r="6" fill="#E2D9CF" stroke="#F4B6C2" stroke-width="1.8" />
+                                <circle cx="32" cy="46" r="2" fill="#3F3A45" />
+
+                                <!-- Front Alloy Wheel & Rim -->
+                                <circle cx="98" cy="46" r="9.5" fill="#2A2630" />
+                                <circle cx="98" cy="46" r="6" fill="#E2D9CF" stroke="#F4B6C2" stroke-width="1.8" />
+                                <circle cx="98" cy="46" r="2" fill="#3F3A45" />
+
+                                <!-- LED Headlight & Diamond Sparkle -->
+                                <path d="M 121 37 Q 127 39 123 42 Z" fill="#FFFDF9" />
+                                <circle cx="124" cy="39.5" r="2.2" fill="#F6DFA6" />
+                                <polygon points="124,35 125.5,38.5 129,39.5 125.5,40.5 124,44 122.5,40.5 119,39.5 122.5,38.5" fill="#FFFFFF" opacity="0.8" />
+                            </svg>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- LANE 2: SN2 -->
+                <div class="track-lane flex items-center">
+                    <div class="absolute left-3 text-xs font-bold text-blue-600 bg-blue-100 px-2 py-0.5 rounded z-10 shadow-sm">
+                        CARRIL SN2 🌸
+                    </div>
+
+                    <!-- SN2 Car Vector (Pastel Blue / Mint Green Girly Sports Race Car) -->
+                    <div id="carSN2" class="car-wrapper">
+                        <div id="badgeSN2" class="car-badge">+1</div>
+                        <div class="w-32 h-16 flex items-center justify-center filter drop-shadow-md">
+                            <svg width="130" height="60" viewBox="0 0 130 60">
+                                <defs>
+                                    <!-- Pearl Metallic Gradient for SN2 Body -->
+                                    <linearGradient id="sn2BodyGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+                                        <stop offset="0%" stop-color="#F0FAF8" />
+                                        <stop offset="45%" stop-color="#AFCBFF" />
+                                        <stop offset="80%" stop-color="#B8D8C0" />
+                                        <stop offset="100%" stop-color="#D8C2F0" />
+                                    </linearGradient>
+                                    <linearGradient id="sn2GlassGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+                                        <stop offset="0%" stop-color="#3F3A45" />
+                                        <stop offset="70%" stop-color="#1A181D" />
+                                    </linearGradient>
+                                </defs>
+
+                                <!-- Car Drop Shadow -->
+                                <ellipse cx="65" cy="54" rx="56" ry="4" fill="rgba(63,58,69,0.25)" />
+
+                                <!-- Rear Sport Spoiler -->
+                                <path d="M 10 16 L 22 16 L 18 28 L 6 28 Z" fill="#82A6B1" stroke="#5E838F" stroke-width="0.8" />
+                                <rect x="14" y="28" width="3.5" height="11" fill="#3F3A45" />
+
+                                <!-- Aerodynamic Low-Profile Car Body -->
+                                <path d="M 8 38 Q 18 20 45 16 Q 78 14 102 26 L 123 35 Q 129 40 123 46 L 12 46 Q 6 44 8 38 Z" fill="url(#sn2BodyGrad)" stroke="#82A6B1" stroke-width="1.5" />
+
+                                <!-- Tinted Curved Cockpit Window -->
+                                <path d="M 38 18 Q 62 16 82 26 L 40 26 Z" fill="url(#sn2GlassGrad)" opacity="0.85" />
+                                <path d="M 43 20 Q 60 18 74 25 L 45 25 Z" fill="#F4B6C2" opacity="0.4" />
+
+                                <!-- Side Air Intake Vents -->
+                                <path d="M 50 36 L 62 36 L 58 41 L 48 41 Z" fill="rgba(63,58,69,0.15)" />
+
+                                <!-- Decals 1: Blossom Flowers 🌸 on Hood & Sides -->
+                                <g id="sn2FlowerDecalHood" transform="translate(88, 33)">
+                                    <circle cx="-2" cy="0" r="1.8" fill="#FFFFFF" />
+                                    <circle cx="2" cy="0" r="1.8" fill="#FFFFFF" />
+                                    <circle cx="0" cy="-2" r="1.8" fill="#FFFFFF" />
+                                    <circle cx="0" cy="2" r="1.8" fill="#FFFFFF" />
+                                    <circle cx="0" cy="0" r="1.5" fill="#F6DFA6" />
+                                </g>
+
+                                <!-- Decals 2: Subtle Ribbon 🎀 near Spoiler -->
+                                <g id="sn2BowDecalRear" transform="translate(24, 30)">
+                                    <path d="M 0 2 C -4 -2, -6 6, 0 3 C 6 6, 4 -2, 0 2 Z" fill="#D8C2F0" />
+                                    <path d="M -1 3 L -4 9 L -1 7 L 1 9 L 0 3 Z" fill="#D8C2F0" />
+                                    <circle cx="0" cy="2.5" r="1.2" fill="#FFFFFF" />
+                                </g>
+
+                                <!-- Decals 3: Cute Heart Accent ❤️ -->
+                                <path d="M 108 36 C 108 34, 105 34, 105 36 C 105 38, 108 40, 108 40 C 108 40, 111 38, 111 36 C 111 34, 108 34, 108 36 Z" fill="#F0FAF8" opacity="0.9" />
+
+                                <!-- "SN2" Driver Racing Plate -->
+                                <rect x="52" y="31" width="24" height="11" rx="3" fill="#FFFDF9" stroke="#82A6B1" stroke-width="1" />
+                                <text x="64" y="39.5" font-family="'Fredoka', sans-serif" font-size="9" font-weight="900" fill="#3F3A45" text-anchor="middle">SN2</text>
+
+                                <!-- Rear Alloy Wheel & Rim -->
+                                <circle cx="32" cy="46" r="9.5" fill="#2A2630" />
+                                <circle cx="32" cy="46" r="6" fill="#E2D9CF" stroke="#AFCBFF" stroke-width="1.8" />
+                                <circle cx="32" cy="46" r="2" fill="#3F3A45" />
+
+                                <!-- Front Alloy Wheel & Rim -->
+                                <circle cx="98" cy="46" r="9.5" fill="#2A2630" />
+                                <circle cx="98" cy="46" r="6" fill="#E2D9CF" stroke="#AFCBFF" stroke-width="1.8" />
+                                <circle cx="98" cy="46" r="2" fill="#3F3A45" />
+
+                                <!-- LED Headlight & Diamond Sparkle -->
+                                <path d="M 121 37 Q 127 39 123 42 Z" fill="#FFFDF9" />
+                                <circle cx="124" cy="39.5" r="2.2" fill="#F6DFA6" />
+                                <polygon points="124,35 125.5,38.5 129,39.5 125.5,40.5 124,44 122.5,40.5 119,39.5 122.5,38.5" fill="#FFFFFF" opacity="0.8" />
+                            </svg>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Score / Position Legend -->
+            <div class="grid grid-cols-2 gap-4 mt-4 text-center">
+                <div class="bg-pink-50 p-3 rounded-xl border border-pink-200">
+                    <span class="text-xs font-bold text-pink-600 block uppercase">Posición Carro SN1</span>
+                    <span id="posSN1Text" class="text-2xl font-black text-pink-700">0 / 10</span>
+                </div>
+                <div class="bg-blue-50 p-3 rounded-xl border border-blue-200">
+                    <span class="text-xs font-bold text-blue-600 block uppercase">Posición Carro SN2</span>
+                    <span id="posSN2Text" class="text-2xl font-black text-blue-700">0 / 10</span>
+                </div>
+            </div>
+        </section>
+
+
+        <!-- ==========================================================================
+           10. PREGUNTA ACTUAL & QUIZ ENGINE
+           ========================================================================== -->
+        <section class="glass-card p-6 border-2 border-purple-200">
+            <div class="flex justify-between items-center mb-4">
+                <span id="questionProgress" class="text-sm font-bold text-purple-700 bg-purple-100 px-3 py-1 rounded-full">
+                    Pregunta 1 de 11
+                </span>
+                <span id="challengeBadge" class="hidden text-xs font-extrabold bg-amber-300 text-amber-900 px-3 py-1 rounded-full shadow animate-pulse">
+                    ⭐ DESAFÍO (+2 Avance)
+                </span>
+            </div>
+
+            <!-- Question Text -->
+            <h3 id="questionText" class="text-lg md:text-xl font-bold text-gray-800 mb-6 leading-snug">
+                Cargando pregunta...
+            </h3>
+
+            <!-- Options Container -->
+            <div id="optionsContainer" class="space-y-3 mb-6">
+                <!-- Options injected by JS -->
+            </div>
+
+            <!-- Action Controls & Feedback Box -->
+            <div class="space-y-4">
+                <div class="flex flex-wrap gap-3 items-center">
+                    <button id="btnSubmitAnswer" onclick="submitAnswer()" class="btn-custom btn-accent px-8 py-3 text-base text-gray-800 shadow-md">
+                        Responder
+                    </button>
+                    <button id="btnNextQuestion" onclick="nextQuestion()" disabled class="btn-custom bg-gray-200 text-gray-400 px-8 py-3 text-base cursor-not-allowed">
+                        Siguiente Pregunta ➔
+                    </button>
+                </div>
+
+                <!-- Instant Feedback Banner -->
+                <div id="feedbackBox" class="hidden p-4 rounded-xl border transition-all duration-300">
+                    <div id="feedbackTitle" class="font-extrabold text-lg mb-1"></div>
+                    <p id="feedbackText" class="text-sm leading-relaxed"></p>
+                </div>
+            </div>
+        </section>
+
+
+        <!-- ==========================================================================
+           16. EL MOTOR DE LA REACCIÓN
+           ========================================================================== -->
+        <section class="glass-card p-6 border border-gray-200">
+            <div class="mb-4">
+                <h2 class="text-xl font-bold text-gray-800 flex items-center gap-2">
+                    <span>⚙️</span> EL MOTOR DE LA REACCIÓN
+                </h2>
+                <p class="text-xs text-gray-500">Selecciona las condiciones experimentales para predecir dinámicamente el mecanismo preferente.</p>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
+                <!-- Sustrato -->
+                <div class="bg-gray-50 p-4 rounded-xl border border-gray-200">
+                    <label class="block text-xs font-bold text-gray-600 mb-2 uppercase">1. Sustrato</label>
+                    <select id="selectSubstrate" class="w-full bg-white border border-gray-300 rounded-lg p-2.5 text-sm font-semibold text-gray-700 focus:outline-none focus:border-purple-400">
+                        <option value="primario">Primario (1°)</option>
+                        <option value="secundario">Secundario (2°)</option>
+                        <option value="terciario" selected>Terciario (3°)</option>
+                    </select>
+                </div>
+
+                <!-- Nucleófilo -->
+                <div class="bg-gray-50 p-4 rounded-xl border border-gray-200">
+                    <label class="block text-xs font-bold text-gray-600 mb-2 uppercase">2. Nucleófilo</label>
+                    <select id="selectNucleophile" class="w-full bg-white border border-gray-300 rounded-lg p-2.5 text-sm font-semibold text-gray-700 focus:outline-none focus:border-purple-400">
+                        <option value="fuerte">Fuerte (ej. OH⁻, CN⁻, I⁻)</option>
+                        <option value="debil" selected>Débil (ej. H₂O, ROH)</option>
+                    </select>
+                </div>
+
+                <!-- Disolvente -->
+                <div class="bg-gray-50 p-4 rounded-xl border border-gray-200">
+                    <label class="block text-xs font-bold text-gray-600 mb-2 uppercase">3. Disolvente</label>
+                    <select id="selectSolvent" class="w-full bg-white border border-gray-300 rounded-lg p-2.5 text-sm font-semibold text-gray-700 focus:outline-none focus:border-purple-400">
+                        <option value="protico" selected>Polar Prótico (H₂O, Etanol)</option>
+                        <option value="aprotico">Polar Aprótico (DMSO, Acetona, DMF)</option>
+                    </select>
+                </div>
+
+                <!-- Grupo Saliente -->
+                <div class="bg-gray-50 p-4 rounded-xl border border-gray-200">
+                    <label class="block text-xs font-bold text-gray-600 mb-2 uppercase">4. Grupo Saliente</label>
+                    <select id="selectLeavingGroup" class="w-full bg-white border border-gray-300 rounded-lg p-2.5 text-sm font-semibold text-gray-700 focus:outline-none focus:border-purple-400">
+                        <option value="bueno" selected>Buen Grupo Saliente (I⁻, Br⁻, TsO⁻)</option>
+                        <option value="malo">Malo (OH⁻, NH₂⁻)</option>
+                    </select>
+                </div>
+            </div>
+
+            <button onclick="analyzeReactionEngine()" class="btn-custom bg-purple-200 hover:bg-purple-300 text-purple-900 w-full py-3 text-sm font-bold tracking-wide">
+                🧪 ANALIZAR REACCIÓN
+            </button>
+        </section>
+
+
+        <!-- ==========================================================================
+           18. PREDICCIÓN DINÁMICA
+           ========================================================================== -->
+        <section class="glass-card p-6 border border-gray-200 bg-amber-50/30">
+            <h2 class="text-xl font-bold text-gray-800 mb-4 flex items-center gap-2">
+                <span>📊</span> PREDICCIÓN DINÁMICA
+            </h2>
+
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
+                <div class="bg-white p-4 rounded-xl border border-pink-200 text-center">
+                    <span class="text-xs font-bold text-pink-600 uppercase">Puntuación SN1</span>
+                    <div id="scoreSN1Engine" class="text-3xl font-black text-pink-500 mt-1">0 pts</div>
+                </div>
+                <div class="bg-white p-4 rounded-xl border border-blue-200 text-center">
+                    <span class="text-xs font-bold text-blue-600 uppercase">Puntuación SN2</span>
+                    <div id="scoreSN2Engine" class="text-3xl font-black text-blue-500 mt-1">0 pts</div>
+                </div>
+                <div class="bg-purple-100 p-4 rounded-xl border border-purple-200 text-center flex flex-col justify-center">
+                    <span class="text-xs font-bold text-purple-700 uppercase">Mecanismo Preferente</span>
+                    <div id="preferredMechanismText" class="text-xl font-black text-purple-900 mt-1">---</div>
+                </div>
+            </div>
+
+            <div class="bg-white p-4 rounded-xl border border-gray-200 text-sm text-gray-700 leading-relaxed">
+                <strong class="text-gray-900 block mb-1">Explicación Química:</strong>
+                <span id="engineExplanationText">Presiona "ANALIZAR REACCIÓN" para obtener la predicción detallada según los factores estructurales y ambientales.</span>
+            </div>
+        </section>
+
+
+        <!-- ==========================================================================
+           20 & 21. VISUALIZACIÓN DE MECANISMOS SN1 Y SN2
+           ========================================================================== -->
+        <section class="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <!-- SN1 Animation Box -->
+            <div class="glass-card p-6 border-t-4 border-pink-400">
+                <h3 class="text-lg font-bold text-pink-700 mb-2">Mecanismo SN1 (Por Etapas)</h3>
+                <p class="text-xs text-gray-600 mb-4">1. Salida del grupo saliente → Formación del carbocatión plano.<br>2. Ataque nucleofílico por cualquiera de las dos caras.</p>
+                <div class="anim-box p-4 flex flex-col items-center justify-center text-center">
+                    <div id="sn1AnimStage" class="text-sm font-bold text-gray-800 mb-2">
+                        [ R-X ] ➔ [ R⁺ + X⁻ ] ➔ [ R-Nu ]
+                    </div>
+                    <svg class="w-48 h-20" viewBox="0 0 200 80">
+                        <circle cx="40" cy="40" r="16" fill="#F4B6C2" />
+                        <text x="40" y="44" font-size="10" text-anchor="middle" font-weight="bold">R⁺</text>
+                        <circle cx="160" cy="40" r="12" fill="#AFCBFF" />
+                        <text x="160" y="44" font-size="9" text-anchor="middle" font-weight="bold">Nu⁻</text>
+                        <path d="M 60 40 Q 100 20 140 40" stroke="#C9B6E4" stroke-width="2" fill="none" stroke-dasharray="4"/>
+                    </svg>
+                </div>
+            </div>
+
+            <!-- SN2 Animation Box -->
+            <div class="glass-card p-6 border-t-4 border-blue-400">
+                <h3 class="text-lg font-bold text-blue-700 mb-2">Mecanismo SN2 (Concertado)</h3>
+                <p class="text-xs text-gray-600 mb-4">1. Ataque por la cara posterior del nucleófilo.<br>2. Estado de transición pentacoordinado e inversión de Walden.</p>
+                <div class="anim-box p-4 flex flex-col items-center justify-center text-center">
+                    <div id="sn2AnimStage" class="text-sm font-bold text-gray-800 mb-2">
+                        [ Nu⁻ + R-X ] ➔ [ Nu···R···X ] ➔ [ Nu-R + X⁻ ]
+                    </div>
+                    <svg class="w-48 h-20" viewBox="0 0 200 80">
+                        <circle cx="30" cy="40" r="12" fill="#AFCBFF" />
+                        <text x="30" y="44" font-size="9" text-anchor="middle" font-weight="bold">Nu⁻</text>
+                        <line x1="45" y1="40" x2="85" y2="40" stroke="#3F3A45" stroke-width="2" stroke-dasharray="3"/>
+                        <circle cx="100" cy="40" r="16" fill="#B8D8C0" />
+                        <text x="100" y="44" font-size="10" text-anchor="middle" font-weight="bold">C</text>
+                        <line x1="115" y1="40" x2="155" y2="40" stroke="#3F3A45" stroke-width="2" stroke-dasharray="3"/>
+                        <circle cx="170" cy="40" r="12" fill="#F4B6C2" />
+                        <text x="170" y="44" font-size="9" text-anchor="middle" font-weight="bold">X⁻</text>
+                    </svg>
+                </div>
+            </div>
+        </section>
+
+
+        <!-- ==========================================================================
+           22. PERFIL ENERGÉTICO
+           ========================================================================== -->
+        <section class="glass-card p-6 border border-gray-200">
+            <h2 class="text-xl font-bold text-gray-800 mb-2 flex items-center gap-2">
+                <span>📈</span> PERFIL ENERGÉTICO
+            </h2>
+            <p class="text-xs text-gray-500 mb-4">Comparación gráfica de la energía potencial frente a la coordenada de reacción.</p>
+
+            <div class="bg-white p-4 rounded-xl border border-gray-200 overflow-x-auto">
+                <svg viewBox="0 0 500 220" class="w-full max-w-xl mx-auto">
+                    <!-- Axes -->
+                    <line x1="40" y1="190" x2="470" y2="190" stroke="#666" stroke-width="2" />
+                    <line x1="40" y1="20" x2="40" y2="190" stroke="#666" stroke-width="2" />
+                    <text x="250" y="212" font-size="10" font-weight="bold" fill="#666" text-anchor="middle">Coordenada de Reacción</text>
+                    <text x="18" y="100" font-size="10" font-weight="bold" fill="#666" transform="rotate(-90 18 100)" text-anchor="middle">Energía</text>
+
+                    <!-- SN2 Curve (Single Peak) -->
+                    <path d="M 50 150 C 130 10, 210 10, 290 170" fill="none" stroke="#AFCBFF" stroke-width="4" />
+                    <circle cx="170" cy="48" r="5" fill="#3B82F6" />
+                    <text x="170" y="32" font-size="10" font-weight="bold" fill="#1E40AF" text-anchor="middle">ET (SN2)</text>
+
+                    <!-- SN1 Curve (Two Peaks + Intermediate Valley) -->
+                    <path d="M 50 150 C 90 20, 130 30, 160 110 C 190 130, 240 40, 290 170" fill="none" stroke="#F4B6C2" stroke-width="4" stroke-dasharray="6,2" />
+                    <circle cx="112" cy="52" r="4" fill="#EC4899" />
+                    <circle cx="160" cy="110" r="4" fill="#D97706" />
+                    <circle cx="230" cy="72" r="4" fill="#EC4899" />
+
+                    <text x="112" y="38" font-size="9" font-weight="bold" fill="#9D174D" text-anchor="middle">ET1</text>
+                    <text x="160" y="125" font-size="9" font-weight="bold" fill="#92400E" text-anchor="middle">Carbocatión (Intermediario)</text>
+                    <text x="230" y="58" font-size="9" font-weight="bold" fill="#9D174D" text-anchor="middle">ET2</text>
+
+                    <!-- Legend -->
+                    <rect x="330" y="30" width="130" height="55" rx="8" fill="#FFFDF9" stroke="#E2D9CF" />
+                    <line x1="340" y1="45" x2="365" y2="45" stroke="#F4B6C2" stroke-width="3" stroke-dasharray="4,2"/>
+                    <text x="375" y="48" font-size="10" font-weight="bold" fill="#3F3A45">SN1 (2 Pasos)</text>
+                    <line x1="340" y1="68" x2="365" y2="68" stroke="#AFCBFF" stroke-width="3"/>
+                    <text x="375" y="71" font-size="10" font-weight="bold" fill="#3F3A45">SN2 (1 Paso)</text>
+                </svg>
+            </div>
+        </section>
+
+
+        <!-- ==========================================================================
+           23, 24, 25 & 26. ESTEREOQUÍMICA, CINÉTICA Y TARJETAS EDUCATIVAS
+           ========================================================================== -->
+        <section class="space-y-6">
+            <!-- Kinetics & Stereochemistry Summary Grid -->
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <!-- SN1 Summary Card -->
+                <div class="glass-card p-6 border-l-8 border-pink-300">
+                    <h3 class="text-xl font-black text-pink-600 mb-2">SN1: Sustitución Unimolecular</h3>
+                    <ul class="text-sm space-y-2 text-gray-700">
+                        <li><strong>Cinética:</strong> Velocidad = k[Sustrato] (Primer Orden)</li>
+                        <li><strong>Mecanismo:</strong> 2 etapas con intermediario carbocatiónico.</li>
+                        <li><strong>Estereoquímica:</strong> Mezcla / Racemización (Ataque por ambas caras).</li>
+                        <li><strong>Favorecido por:</strong> Sustratos 3°, nucleófilos débiles, disolventes polares próticos.</li>
+                    </ul>
+                </div>
+
+                <!-- SN2 Summary Card -->
+                <div class="glass-card p-6 border-l-8 border-blue-300">
+                    <h3 class="text-xl font-black text-blue-600 mb-2">SN2: Sustitución Bimolecular</h3>
+                    <ul class="text-sm space-y-2 text-gray-700">
+                        <li><strong>Cinética:</strong> Velocidad = k[Sustrato][Nucleófilo] (Segundo Orden)</li>
+                        <li><strong>Mecanismo:</strong> 1 etapa concertada sin intermediarios.</li>
+                        <li><strong>Estereoquímica:</strong> Inversión de configuración (Inversión de Walden).</li>
+                        <li><strong>Favorecido por:</strong> Sustratos 1°, nucleófilos fuertes, disolventes polares apróticos.</li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- Educational Concept Cards -->
+            <div class="glass-card p-6">
+                <h3 class="text-lg font-bold text-gray-800 mb-4">Glosario Interactivo de Conceptos</h3>
+                <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3">
+                    <div class="edu-card p-3">
+                        <span class="font-bold text-xs text-purple-800 block">Carbocatión</span>
+                        <p class="text-xs text-gray-600 mt-1">Especie intermedia cargada positivamente con geometría plana (hibridación sp²).</p>
+                    </div>
+                    <div class="edu-card p-3">
+                        <span class="font-bold text-xs text-purple-800 block">Inversión de Walden</span>
+                        <p class="text-xs text-gray-600 mt-1">Cambio de configuración espacial en SN2 por el ataque posterior del nucleófilo.</p>
+                    </div>
+                    <div class="edu-card p-3">
+                        <span class="font-bold text-xs text-purple-800 block">Disolvente Polar Prótico</span>
+                        <p class="text-xs text-gray-600 mt-1">Disolvente capaz de formar puentes de hidrógeno (ej. Agua) que estabiliza carbocationes.</p>
+                    </div>
+                    <div class="edu-card p-3">
+                        <span class="font-bold text-xs text-purple-800 block">Disolvente Polar Aprótico</span>
+                        <p class="text-xs text-gray-600 mt-1">Disolvente sin H ácidos (ej. DMSO, Acetona) que favorece la reactividad nucleofílica.</p>
+                    </div>
+                    <div class="edu-card p-3">
+                        <span class="font-bold text-xs text-purple-800 block">Estado de Transición</span>
+                        <p class="text-xs text-gray-600 mt-1">Estado de máxima energía inestable donde se forman y rompen enlaces simultáneamente.</p>
+                    </div>
+                    <div class="edu-card p-3">
+                        <span class="font-bold text-xs text-purple-800 block">Impedimento Estérico</span>
+                        <p class="text-xs text-gray-600 mt-1">Obstáculo espacial causado por grupos voluminosos que dificulta el ataque SN2.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+    </div>
+
+
+    <!-- ==========================================================================
+       27. RESULTADO FINAL DE LA CARRERA
+       ========================================================================== -->
+    <div id="resultsScreen" class="screen max-w-3xl mx-auto px-4 py-12">
+        <div class="glass-card p-8 text-center border-4 border-amber-200">
+            <div class="text-5xl mb-2">🏆</div>
+            <h1 class="text-3xl md:text-4xl font-black text-gray-800 mb-2">
+                RESULTADO DE LA CARRERA
+            </h1>
+            <p id="winnerAnnouncement" class="text-xl font-bold text-purple-700 mb-6"></p>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
+                <div class="bg-pink-50 p-4 rounded-xl border border-pink-200">
+                    <span class="text-xs font-bold text-pink-600 uppercase">Posición Final SN1</span>
+                    <div id="finalPosSN1" class="text-3xl font-black text-pink-600 mt-1">0</div>
+                </div>
+                <div class="bg-blue-50 p-4 rounded-xl border border-blue-200">
+                    <span class="text-xs font-bold text-blue-600 uppercase">Posición Final SN2</span>
+                    <div id="finalPosSN2" class="text-3xl font-black text-blue-600 mt-1">0</div>
+                </div>
+            </div>
+
+            <div class="bg-white p-6 rounded-xl border border-gray-200 text-left mb-8 space-y-3 text-sm text-gray-700">
+                <div><strong>Respuestas Correctas:</strong> <span id="correctAnswersCount">0</span> / 11</div>
+                <div><strong>Mecanismo Predominante en la Carrera:</strong> <span id="raceWinnerMechanism">---</span></div>
+                <p id="finalSummaryParagraph" class="text-xs text-gray-600 leading-relaxed border-t pt-3 mt-2"></p>
+            </div>
+
+            <button onclick="resetSimulation()" class="btn-custom bg-purple-300 hover:bg-purple-400 text-gray-800 text-lg px-8 py-3 rounded-xl shadow-md">
+                🔄 VOLVER A JUGAR
+            </button>
+        </div>
+    </div>
+
+
+    <!-- ==========================================================================
+       JAVASCRIPT LOGIC AND APPLICATION ENGINE
+       ========================================================================== -->
+    <script>
+        /* ==========================================================================
+           1. CONFIGURACIÓN DE LA CARRERA (JS CENTRALIZED EDITABLE CONFIG)
+           ========================================================================== */
+        const CONFIG = {
+            totalQuestions: 11,
+            trackLength: 10,           // Total track steps
+            normalStepSize: 1,         // Normal question car movement (+1)
+            challengeStepSize: 2,      // Challenge question car movement (+2)
+            carAnimationDuration: 800, // Duration in ms
+            audioEnabled: true,
+            finishLinePosPercent: 82   // Percentage on track corresponding to position 10
+        };
+
+        /* ==========================================================================
+           2. BANCO DE PREGUNTAS (QUESTION BANK)
+           ========================================================================== */
+        const QUESTIONS_BANK = [
+            {
+                id: 1,
+                question: "1. ¿Qué tipo de sustrato favorece más una reacción SN1?",
+                options: ["A) Primario", "B) Secundario", "C) Terciario", "D) Metilo"],
+                correctIndex: 2,
+                mechanism: "SN1",
+                advance: 1,
+                isChallenge: false,
+                justification: "Los sustratos terciarios favorecen SN1 porque forman carbocationes terciarios relativamente estables."
+            },
+            {
+                id: 2,
+                question: "2. ¿Qué tipo de sustrato favorece más una reacción SN2?",
+                options: ["A) Terciario", "B) Secundario", "C) Primario", "D) Ninguno"],
+                correctIndex: 2,
+                mechanism: "SN2",
+                advance: 1,
+                isChallenge: false,
+                justification: "Los sustratos primarios presentan menor impedimento estérico y permiten el ataque directo del nucleófilo."
+            },
+            {
+                id: 3,
+                question: "3. ¿Qué tipo de nucleófilo favorece SN2?",
+                options: ["A) Nucleófilo fuerte", "B) Nucleófilo muy débil", "C) Carbocatión", "D) Grupo saliente"],
+                correctIndex: 0,
+                mechanism: "SN2",
+                advance: 1,
+                isChallenge: false,
+                justification: "En SN2 el nucleófilo participa directamente en el paso determinante de la velocidad, por lo que un nucleófilo fuerte favorece el mecanismo."
+            },
+            {
+                id: 4,
+                question: "4. ¿Qué disolvente favorece generalmente SN1?",
+                options: ["A) Polar aprótico", "B) Polar prótico", "C) No polar", "D) Gas"],
+                correctIndex: 1,
+                mechanism: "SN1",
+                advance: 1,
+                isChallenge: false,
+                justification: "Los disolventes polares próticos ayudan a estabilizar especies cargadas y favorecen la formación del carbocatión."
+            },
+            {
+                id: 5,
+                question: "5. ¿Qué disolvente favorece generalmente SN2?",
+                options: ["A) Polar prótico", "B) Polar aprótico", "C) Agua", "D) Etanol"],
+                correctIndex: 1,
+                mechanism: "SN2",
+                advance: 1,
+                isChallenge: false,
+                justification: "Los disolventes polares apróticos suelen favorecer la reactividad del nucleófilo y, por tanto, SN2."
+            },
+            {
+                id: 6,
+                question: "6. ¿Cuántas etapas principales tiene una reacción SN1?",
+                options: ["A) Una", "B) Dos", "C) Tres", "D) Cuatro"],
+                correctIndex: 1,
+                mechanism: "SN1",
+                advance: 1,
+                isChallenge: false,
+                justification: "SN1 ocurre principalmente en dos etapas: formación del carbocatión y posterior ataque del nucleófilo."
+            },
+            {
+                id: 7,
+                question: "7. ¿Cuántas etapas tiene una reacción SN2?",
+                options: ["A) Una", "B) Dos", "C) Tres", "D) Cuatro"],
+                correctIndex: 0,
+                mechanism: "SN2",
+                advance: 1,
+                isChallenge: false,
+                justification: "SN2 es un proceso concertado de una sola etapa; el nucleófilo ataca mientras el grupo saliente abandona."
+            },
+            {
+                id: 8,
+                question: "8. ¿Qué ocurre con la configuración espacial en SN2?",
+                options: ["A) No cambia.", "B) Se produce inversión de configuración.", "C) Se forma un carbocatión.", "D) Se forman dos carbocationes."],
+                correctIndex: 1,
+                mechanism: "SN2",
+                advance: 1,
+                isChallenge: false,
+                justification: "El nucleófilo ataca por el lado opuesto al grupo saliente, provocando inversión de configuración o inversión de Walden."
+            },
+            {
+                id: 9,
+                question: "9. ¿Por qué SN1 puede producir productos con diferentes configuraciones?",
+                options: ["A) Porque el nucleófilo siempre ataca por atrás.", "B) Porque se forma un carbocatión aproximadamente plano.", "C) Porque no existe grupo saliente.", "D) Porque SN1 ocurre en una sola etapa."],
+                correctIndex: 1,
+                mechanism: "SN1",
+                advance: 1,
+                isChallenge: false,
+                justification: "El carbocatión es aproximadamente plano, por lo que el nucleófilo puede atacar por cualquiera de sus caras."
+            },
+            {
+                id: 10,
+                question: "⭐ DESAFÍO 1: Sustrato terciario, nucleófilo fuerte, disolvente polar prótico y buen grupo saliente. ¿Qué mecanismo es el preferido?",
+                options: ["A) SN1", "B) SN2"],
+                correctIndex: 0,
+                mechanism: "SN1",
+                advance: 2,
+                isChallenge: true,
+                justification: "Aunque un nucleófilo fuerte favorece SN2, el sustrato terciario y el disolvente polar prótico favorecen fuertemente SN1. En conjunto, SN1 es el mecanismo preferente."
+            },
+            {
+                id: 11,
+                question: "⭐ DESAFÍO 2: Sustrato primario, nucleófilo fuerte, disolvente polar aprótico y buen grupo saliente. ¿Qué mecanismo es el preferido?",
+                options: ["A) SN1", "B) SN2"],
+                correctIndex: 1,
+                mechanism: "SN2",
+                advance: 2,
+                isChallenge: true,
+                justification: "El sustrato primario presenta poco impedimento estérico, el nucleófilo es fuerte y el disolvente es polar aprótico, por lo que SN2 es la vía favorecida."
+            }
+        ];
+
+        /* ==========================================================================
+           3. CONFIGURACIÓN DE SONIDO (WEB AUDIO API SYNTHESIZER)
+           ========================================================================== */
+        let audioCtx = null;
+
+        function initAudioContext() {
+            if (!audioCtx) {
+                const AudioContextClass = window.AudioContext || window.webkitAudioContext;
+                if (AudioContextClass) {
+                    audioCtx = new AudioContextClass();
+                }
+            }
+            if (audioCtx && audioCtx.state === 'suspended') {
+                audioCtx.resume();
+            }
+        }
+
+        function toggleAudio() {
+            CONFIG.audioEnabled = !CONFIG.audioEnabled;
+            document.getElementById('soundIcon').innerText = CONFIG.audioEnabled ? "🔊" : "🔇";
+        }
+
+        // Sound synthesizer helper functions
+        function playTone(freq, duration, type = 'sine', volume = 0.1) {
+            if (!CONFIG.audioEnabled) return;
+            initAudioContext();
+            if (!audioCtx) return;
+
+            try {
+                const osc = audioCtx.createOscillator();
+                const gain = audioCtx.createGain();
+                osc.type = type;
+                osc.frequency.setValueAtTime(freq, audioCtx.currentTime);
+                gain.gain.setValueAtTime(volume, audioCtx.currentTime);
+                gain.gain.exponentialRampToValueAtTime(0.0001, audioCtx.currentTime + duration);
+
+                osc.connect(gain);
+                gain.connect(audioCtx.destination);
+
+                osc.start();
+                osc.stop(audioCtx.currentTime + duration);
+            } catch (e) {
+                console.error("Audio playback error", e);
+            }
+        }
+
+        function playSelectSound() {
+            playTone(440, 0.08, 'sine', 0.05);
+        }
+
+        function playCorrectSound() {
+            if (!CONFIG.audioEnabled) return;
+            initAudioContext();
+            playTone(523.25, 0.12, 'triangle', 0.1); // C5
+            setTimeout(() => playTone(659.25, 0.12, 'triangle', 0.1), 100); // E5
+            setTimeout(() => playTone(783.99, 0.25, 'triangle', 0.12), 200); // G5
+        }
+
+        function playWrongSound() {
+            if (!CONFIG.audioEnabled) return;
+            initAudioContext();
+            playTone(220, 0.18, 'sawtooth', 0.08);
+            setTimeout(() => playTone(180, 0.25, 'sawtooth', 0.08), 120);
+        }
+
+        function playEngineSound(durationMs = 800) {
+            if (!CONFIG.audioEnabled) return;
+            initAudioContext();
+            if (!audioCtx) return;
+
+            try {
+                const osc = audioCtx.createOscillator();
+                const gain = audioCtx.createGain();
+                osc.type = 'sawtooth';
+                
+                const startTime = audioCtx.currentTime;
+                const endTime = startTime + (durationMs / 1000);
+
+                osc.frequency.setValueAtTime(110, startTime);
+                osc.frequency.exponentialRampToValueAtTime(280, startTime + 0.3);
+                osc.frequency.linearRampToValueAtTime(90, endTime);
+
+                gain.gain.setValueAtTime(0.08, startTime);
+                gain.gain.linearRampToValueAtTime(0.001, endTime);
+
+                osc.connect(gain);
+                gain.connect(audioCtx.destination);
+
+                osc.start();
+                osc.stop(endTime);
+            } catch (e) {
+                console.error("Engine sound error", e);
+            }
+        }
+
+        function playChallengeSound() {
+            if (!CONFIG.audioEnabled) return;
+            playTone(880, 0.15, 'sine', 0.1);
+            setTimeout(() => playTone(1174.66, 0.2, 'triangle', 0.12), 120);
+        }
+
+        function playVictorySound() {
+            if (!CONFIG.audioEnabled) return;
+            initAudioContext();
+            const notes = [523.25, 659.25, 783.99, 1046.50];
+            notes.forEach((freq, i) => {
+                setTimeout(() => playTone(freq, 0.3, 'triangle', 0.12), i * 150);
+            });
+        }
+
+
+        /* ==========================================================================
+           4. ESTADO DE LA SIMULACIÓN (SIMULATION STATE)
+           ========================================================================== */
+        let state = {
+            currentQuestionIndex: 0,
+            posSN1: 0,
+            posSN2: 0,
+            scoreSN1: 0,
+            scoreSN2: 0,
+            correctAnswersCount: 0,
+            selectedOptionIndex: null,
+            hasRespondedCurrent: false
+        };
+
+        /* Screen navigation */
+        function showScreen(screenId) {
+            document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+            const target = document.getElementById(screenId);
+            if (target) target.classList.add('active');
+        }
+
+        function startSimulation() {
+            initAudioContext();
+            showScreen('simulationScreen');
+            renderQuestion();
+            updateCarPositions(false);
+            analyzeReactionEngine();
+        }
+
+        /* ==========================================================================
+           5 & 6. FUNCIONES DE PREGUNTAS Y RESPUESTAS
+           ========================================================================== */
+        function renderQuestion() {
+            const q = QUESTIONS_BANK[state.currentQuestionIndex];
+            state.selectedOptionIndex = null;
+            state.hasRespondedCurrent = false;
+
+            // Header progress
+            document.getElementById('questionProgress').innerText = `Pregunta ${state.currentQuestionIndex + 1} de ${CONFIG.totalQuestions}`;
+
+            // Challenge badge visibility
+            const challengeBadge = document.getElementById('challengeBadge');
+            if (q.isChallenge) {
+                challengeBadge.classList.remove('hidden');
+                playChallengeSound();
+            } else {
+                challengeBadge.classList.add('hidden');
+            }
+
+            // Question text
+            document.getElementById('questionText').innerText = q.question;
+
+            // Options list
+            const container = document.getElementById('optionsContainer');
+            container.innerHTML = '';
+            q.options.forEach((optText, index) => {
+                const btn = document.createElement('button');
+                btn.className = 'quiz-option';
+                btn.innerHTML = `<span class="w-6 h-6 rounded-full border border-gray-300 flex items-center justify-center text-xs font-bold">${String.fromCharCode(65 + index)}</span> <span>${optText.replace(/^[A-D]\)\s*/, '')}</span>`;
+                btn.onclick = () => selectOption(index);
+                container.appendChild(btn);
+            });
+
+            // Button states
+            const submitBtn = document.getElementById('btnSubmitAnswer');
+            submitBtn.disabled = false;
+            submitBtn.className = "btn-custom btn-accent px-8 py-3 text-base text-gray-800 shadow-md";
+
+            const nextBtn = document.getElementById('btnNextQuestion');
+            nextBtn.disabled = true;
+            nextBtn.className = "btn-custom bg-gray-200 text-gray-400 px-8 py-3 text-base cursor-not-allowed";
+
+            // Hide feedback box
+            const fbBox = document.getElementById('feedbackBox');
+            fbBox.className = "hidden p-4 rounded-xl border transition-all duration-300";
+        }
+
+        function selectOption(index) {
+            if (state.hasRespondedCurrent) return;
+            state.selectedOptionIndex = index;
+            playSelectSound();
+
+            const options = document.querySelectorAll('.quiz-option');
+            options.forEach((opt, idx) => {
+                if (idx === index) {
+                    opt.classList.add('selected');
+                } else {
+                    opt.classList.remove('selected');
+                }
+            });
+        }
+
+        function submitAnswer() {
+            if (state.hasRespondedCurrent) return;
+            if (state.selectedOptionIndex === null) {
+                alert("Por favor, selecciona una respuesta antes de continuar.");
+                return;
+            }
+
+            state.hasRespondedCurrent = true;
+            const q = QUESTIONS_BANK[state.currentQuestionIndex];
+            const isCorrect = (state.selectedOptionIndex === q.correctIndex);
+
+            const options = document.querySelectorAll('.quiz-option');
+            options.forEach((opt, idx) => {
+                opt.classList.add('disabled');
+                if (idx === q.correctIndex) {
+                    opt.classList.add('correct');
+                } else if (idx === state.selectedOptionIndex && !isCorrect) {
+                    opt.classList.add('wrong');
+                }
+            });
+
+            // Feedback Banner Display
+            const fbBox = document.getElementById('feedbackBox');
+            const fbTitle = document.getElementById('feedbackTitle');
+            const fbText = document.getElementById('feedbackText');
+            fbBox.classList.remove('hidden');
+
+            if (isCorrect) {
+                state.correctAnswersCount++;
+                playCorrectSound();
+                fbBox.className = "p-4 rounded-xl border border-green-300 bg-green-50 text-green-900";
+                fbTitle.innerText = "¡CORRECTO! 🎉";
+                
+                // Car Advancement
+                if (q.mechanism === "SN1") {
+                    state.posSN1 = Math.min(CONFIG.trackLength, state.posSN1 + q.advance);
+                    state.scoreSN1 += q.advance;
+                    triggerCarAdvanceAnim("carSN1", "badgeSN1", q.advance);
+                } else if (q.mechanism === "SN2") {
+                    state.posSN2 = Math.min(CONFIG.trackLength, state.posSN2 + q.advance);
+                    state.scoreSN2 += q.advance;
+                    triggerCarAdvanceAnim("carSN2", "badgeSN2", q.advance);
+                }
+                fbText.innerText = `${q.justification} (Carro ${q.mechanism} avanza +${q.advance})`;
+
+            } else {
+                playWrongSound();
+                fbBox.className = "p-4 rounded-xl border border-red-300 bg-red-50 text-red-900";
+                fbTitle.innerText = "INCORRECTO ❌";
+                fbText.innerText = `${q.justification} (Ningún carro avanza esta ronda).`;
+            }
+
+            // Enable Next Question button
+            const submitBtn = document.getElementById('btnSubmitAnswer');
+            submitBtn.disabled = true;
+            submitBtn.className = "btn-custom bg-gray-200 text-gray-400 px-8 py-3 text-base cursor-not-allowed";
+
+            const nextBtn = document.getElementById('btnNextQuestion');
+            nextBtn.disabled = false;
+            nextBtn.className = "btn-custom bg-purple-300 hover:bg-purple-400 text-gray-800 px-8 py-3 text-base shadow-md";
+        }
+
+        function nextQuestion() {
+            if (!state.hasRespondedCurrent) return;
+
+            state.currentQuestionIndex++;
+            if (state.currentQuestionIndex < CONFIG.totalQuestions) {
+                renderQuestion();
+            } else {
+                finishRace();
+            }
+        }
+
+
+        /* ==========================================================================
+           7 & 8. FUNCIONES DE MOVIMIENTO DE LOS CARROS Y ANIMACIONES
+           ========================================================================== */
+        function triggerCarAdvanceAnim(carId, badgeId, advanceCount) {
+            const car = document.getElementById(carId);
+            const badge = document.getElementById(badgeId);
+
+            // Synchronized audio motor sound
+            playEngineSound(CONFIG.carAnimationDuration);
+
+            // Badge popup animation
+            badge.innerText = `+${advanceCount}`;
+            badge.classList.add('show');
+            car.classList.add('car-moving');
+
+            updateCarPositions(true);
+
+            setTimeout(() => {
+                badge.classList.remove('show');
+                car.classList.remove('car-moving');
+            }, CONFIG.carAnimationDuration + 200);
+        }
+
+        function updateCarPositions(animated = true) {
+            const carSN1 = document.getElementById('carSN1');
+            const carSN2 = document.getElementById('carSN2');
+
+            // Calculate percentage based on track positions (0 to 10)
+            const leftPercent1 = (state.posSN1 / CONFIG.trackLength) * CONFIG.finishLinePosPercent;
+            const leftPercent2 = (state.posSN2 / CONFIG.trackLength) * CONFIG.finishLinePosPercent;
+
+            carSN1.style.left = `${Math.max(1, leftPercent1)}%`;
+            carSN2.style.left = `${Math.max(1, leftPercent2)}%`;
+
+            document.getElementById('posSN1Text').innerText = `${state.posSN1} / ${CONFIG.trackLength}`;
+            document.getElementById('posSN2Text').innerText = `${state.posSN2} / ${CONFIG.trackLength}`;
+        }
+
+
+        /* ==========================================================================
+           9 & 10. FUNCIONES DEL MOTOR DE LA REACCIÓN Y PREDICCIÓN DINÁMICA
+           ========================================================================== */
+        function analyzeReactionEngine() {
+            const substrate = document.getElementById('selectSubstrate').value;
+            const nucleophile = document.getElementById('selectNucleophile').value;
+            const solvent = document.getElementById('selectSolvent').value;
+            const leavingGroup = document.getElementById('selectLeavingGroup').value;
+
+            let ptsSN1 = 0;
+            let ptsSN2 = 0;
+
+            // Sustrato
+            if (substrate === 'terciario') ptsSN1 += 3;
+            else if (substrate === 'primario') ptsSN2 += 3;
+            else if (substrate === 'secundario') { ptsSN1 += 1; ptsSN2 += 1; }
+
+            // Nucleófilo
+            if (nucleophile === 'fuerte') ptsSN2 += 2;
+            else if (nucleophile === 'debil') ptsSN1 += 1;
+
+            // Disolvente
+            if (solvent === 'protico') ptsSN1 += 2;
+            else if (solvent === 'aprotico') ptsSN2 += 2;
+
+            // Grupo Saliente
+            if (leavingGroup === 'bueno') { ptsSN1 += 1; ptsSN2 += 1; }
+
+            // Render Results
+            document.getElementById('scoreSN1Engine').innerText = `${ptsSN1} pts`;
+            document.getElementById('scoreSN2Engine').innerText = `${ptsSN2} pts`;
+
+            const prefText = document.getElementById('preferredMechanismText');
+            const explText = document.getElementById('engineExplanationText');
+
+            const diff = Math.abs(ptsSN1 - ptsSN2);
+
+            if (diff <= 1) {
+                prefText.innerText = "Condiciones Competitivas";
+                prefText.className = "text-lg font-black text-amber-700 mt-1";
+                explText.innerText = `Con estos parámetros (Puntuación SN1: ${ptsSN1}, SN2: ${ptsSN2}), ambos mecanismos se encuentran en competencia activa. Ninguno domina de manera exclusiva.`;
+            } else if (ptsSN1 > ptsSN2) {
+                prefText.innerText = "Favorecido: SN1";
+                prefText.className = "text-xl font-black text-pink-600 mt-1";
+                explText.innerText = `La presencia de un sustrato ${substrate} y/o un disolvente polar prótico estabiliza el intermediario carbocatiónico, haciendo que la vía SN1 sea la preferente.`;
+            } else {
+                prefText.innerText = "Favorecido: SN2";
+                prefText.className = "text-xl font-black text-blue-600 mt-1";
+                explText.innerText = `El bajo impedimento estérico (sustrato ${substrate}), sumado a un nucleófilo fuerte o disolvente polar aprótico, favorece ampliamente el ataque directo por la cara posterior (SN2).`;
+            }
+        }
+
+
+        /* ==========================================================================
+           14. FUNCIONES DEL RESULTADO FINAL Y REINICIO
+           ========================================================================== */
+        function finishRace() {
+            playVictorySound();
+            showScreen('resultsScreen');
+
+            document.getElementById('finalPosSN1').innerText = `${state.posSN1} / ${CONFIG.trackLength}`;
+            document.getElementById('finalPosSN2').innerText = `${state.posSN2} / ${CONFIG.trackLength}`;
+            document.getElementById('correctAnswersCount').innerText = state.correctAnswersCount;
+
+            const winnerText = document.getElementById('winnerAnnouncement');
+            const winnerMech = document.getElementById('raceWinnerMechanism');
+            const summaryPar = document.getElementById('finalSummaryParagraph');
+
+            if (state.posSN1 > state.posSN2) {
+                winnerText.innerText = "🥇 ¡El Mecanismo SN1 ha ganado la carrera!";
+                winnerMech.innerText = "SN1 (Unimolecular)";
+                summaryPar.innerText = "Tus respuestas correctas favorecieron el mecanismo en dos etapas a través de la estabilización del carbocatión intermediario.";
+            } else if (state.posSN2 > state.posSN1) {
+                winnerText.innerText = "🥇 ¡El Mecanismo SN2 ha ganado la carrera!";
+                winnerMech.innerText = "SN2 (Bimolecular)";
+                summaryPar.innerText = "Tus respuestas correctas impulsaron el mecanismo concertado de una sola etapa con inversión de configuración de Walden.";
+            } else {
+                winnerText.innerText = "🤝 ¡Empate Técnico entre SN1 y SN2!";
+                winnerMech.innerText = "Competencia Simétrica";
+                summaryPar.innerText = "Ambos mecanismos avanzaron a la par, demostrando un equilibrio químico cinético y termodinámico en las condiciones dadas.";
+            }
+        }
+
+        function resetSimulation() {
+            state = {
+                currentQuestionIndex: 0,
+                posSN1: 0,
+                posSN2: 0,
+                scoreSN1: 0,
+                scoreSN2: 0,
+                correctAnswersCount: 0,
+                selectedOptionIndex: null,
+                hasRespondedCurrent: false
+            };
+
+            updateCarPositions(false);
+            showScreen('welcomeScreen');
+        }
+
+        // Initialize engine analysis on page load
+        window.onload = function() {
+            analyzeReactionEngine();
+        };
+    </script>
+</body>
+</html>

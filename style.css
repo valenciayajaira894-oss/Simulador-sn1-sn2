@@ -1,0 +1,537 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SN1 VS SN2: REACTION RACE</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <!-- PANTALLA INICIAL DE BIENVENIDA Y DATOS DEL PROYECTO -->
+  <div id="welcome-screen" class="welcome-screen">
+    <div class="welcome-card">
+      <div class="chem-icons-bg">
+        <span class="molecule m1">🧪</span>
+        <span class="molecule m2">⚗️</span>
+        <span class="molecule m3">🔬</span>
+        <span class="molecule m4">🌸</span>
+        <span class="molecule m5">🎀</span>
+      </div>
+
+      <div class="header-badges">
+        <span class="badge badge-sn1">SN1 🎀</span>
+        <span class="badge badge-vs">VS</span>
+        <span class="badge badge-sn2">SN2 🌸</span>
+      </div>
+
+      <h1 class="welcome-title">SN1 VS SN2<br><span class="title-sub">REACTION RACE</span></h1>
+      <p class="welcome-tagline">“Analiza, compara y simula el comportamiento cinético y estereoquímico de las reacciones de sustitución nucleófila.”</p>
+
+      <!-- AUTOS DE PRESENTACIÓN -->
+      <div class="cars-preview-container">
+        <div class="car-preview-box">
+          <div class="car-preview-label">SN1 Race Car</div>
+          <svg class="preview-car-svg" viewBox="0 0 160 65" xmlns="http://www.w3.org/2000/svg">
+            <defs>
+              <linearGradient id="bodySn1P" x1="0%" y1="0%" x2="100%" y2="0%">
+                <stop offset="0%" stop-color="#FFF8FB" />
+                <stop offset="30%" stop-color="#F4B6C2" />
+                <stop offset="75%" stop-color="#E27D9A" />
+                <stop offset="100%" stop-color="#C9B6E4" />
+              </linearGradient>
+              <linearGradient id="glassSn1P" x1="0%" y1="0%" x2="100%" y2="100%">
+                <stop offset="0%" stop-color="#3F3A45" stop-opacity="0.9" />
+                <stop offset="100%" stop-color="#9A72A4" stop-opacity="0.8" />
+              </linearGradient>
+            </defs>
+            <path d="M 12 40 L 25 38 L 45 28 C 65 20, 95 20, 115 30 L 140 36 C 148 38, 155 42, 155 48 C 155 52, 145 54, 130 54 L 20 54 C 10 54, 5 48, 12 40 Z" fill="url(#bodySn1P)"/>
+            <path d="M 50 28 C 65 21, 90 21, 105 29 C 100 35, 60 36, 50 28 Z" fill="url(#glassSn1P)"/>
+            <path d="M 8 28 L 22 28 L 20 38 L 10 38 Z" fill="#E27D9A"/>
+            <rect x="6" y="24" width="16" height="4" rx="2" fill="#C9B6E4"/>
+            <circle cx="35" cy="52" r="11" fill="#3F3A45"/>
+            <circle cx="35" cy="52" r="6" fill="#EAE6EE"/>
+            <circle cx="125" cy="52" r="11" fill="#3F3A45"/>
+            <circle cx="125" cy="52" r="6" fill="#EAE6EE"/>
+            <polygon points="148,40 155,42 153,46 146,44" fill="#FFFDF9"/>
+            <g transform="translate(68, 38) scale(0.6)">
+              <path d="M -8 -6 C -15 -12, -15 0, -3 -2 C -15 2, -15 12, -8 6 Z" fill="#FFFDF9"/>
+              <path d="M 8 -6 C 15 -12, 15 0, 3 -2 C 15 2, 15 12, 8 6 Z" fill="#FFFDF9"/>
+              <circle cx="0" cy="0" r="3" fill="#E27D9A"/>
+            </g>
+            <g transform="translate(42, 34) scale(0.5)">
+              <circle cx="-5" cy="-3" r="4" fill="#FFFDF9" opacity="0.9"/>
+              <circle cx="5" cy="-3" r="4" fill="#FFFDF9" opacity="0.9"/>
+              <circle cx="0" cy="5" r="4" fill="#FFFDF9" opacity="0.9"/>
+              <circle cx="-4" cy="2" r="4" fill="#FFFDF9" opacity="0.9"/>
+              <circle cx="4" cy="2" r="4" fill="#FFFDF9" opacity="0.9"/>
+              <circle cx="0" cy="0" r="3" fill="#F4B6C2"/>
+            </g>
+            <text x="92" y="46" font-family="sans-serif" font-weight="900" font-size="10" fill="#3F3A45" opacity="0.8">SN1</text>
+          </svg>
+        </div>
+
+        <div class="car-preview-box">
+          <div class="car-preview-label">SN2 Race Car</div>
+          <svg class="preview-car-svg" viewBox="0 0 160 65" xmlns="http://www.w3.org/2000/svg">
+            <defs>
+              <linearGradient id="bodySn2P" x1="0%" y1="0%" x2="100%" y2="0%">
+                <stop offset="0%" stop-color="#F0FAF8" />
+                <stop offset="35%" stop-color="#AFCBFF" />
+                <stop offset="70%" stop-color="#B8D8C0" />
+                <stop offset="100%" stop-color="#D8C2F0" />
+              </linearGradient>
+              <linearGradient id="glassSn2P" x1="0%" y1="0%" x2="100%" y2="100%">
+                <stop offset="0%" stop-color="#3F3A45" stop-opacity="0.9" />
+                <stop offset="100%" stop-color="#7B9ECC" stop-opacity="0.8" />
+              </linearGradient>
+            </defs>
+            <path d="M 12 40 L 25 38 L 45 28 C 65 20, 95 20, 115 30 L 140 36 C 148 38, 155 42, 155 48 C 155 52, 145 54, 130 54 L 20 54 C 10 54, 5 48, 12 40 Z" fill="url(#bodySn2P)"/>
+            <path d="M 50 28 C 65 21, 90 21, 105 29 C 100 35, 60 36, 50 28 Z" fill="url(#glassSn2P)"/>
+            <path d="M 8 28 L 22 28 L 20 38 L 10 38 Z" fill="#7B9ECC"/>
+            <rect x="6" y="24" width="16" height="4" rx="2" fill="#B8D8C0"/>
+            <circle cx="35" cy="52" r="11" fill="#3F3A45"/>
+            <circle cx="35" cy="52" r="6" fill="#EAE6EE"/>
+            <circle cx="125" cy="52" r="11" fill="#3F3A45"/>
+            <circle cx="125" cy="52" r="6" fill="#EAE6EE"/>
+            <polygon points="148,40 155,42 153,46 146,44" fill="#FFFDF9"/>
+            <g transform="translate(65, 36) scale(0.6)">
+              <circle cx="-5" cy="-3" r="4" fill="#FFFDF9" opacity="0.95"/>
+              <circle cx="5" cy="-3" r="4" fill="#FFFDF9" opacity="0.95"/>
+              <circle cx="0" cy="5" r="4" fill="#FFFDF9" opacity="0.95"/>
+              <circle cx="-4" cy="2" r="4" fill="#FFFDF9" opacity="0.95"/>
+              <circle cx="4" cy="2" r="4" fill="#FFFDF9" opacity="0.95"/>
+              <circle cx="0" cy="0" r="3" fill="#AFCBFF"/>
+            </g>
+            <g transform="translate(100, 38) scale(0.5)">
+              <path d="M -8 -6 C -15 -12, -15 0, -3 -2 C -15 2, -15 12, -8 6 Z" fill="#FFFDF9"/>
+              <path d="M 8 -6 C 15 -12, 15 0, 3 -2 C 15 2, 15 12, 8 6 Z" fill="#FFFDF9"/>
+              <circle cx="0" cy="0" r="3" fill="#B8D8C0"/>
+            </g>
+            <text x="42" y="46" font-family="sans-serif" font-weight="900" font-size="10" fill="#3F3A45" opacity="0.8">SN2</text>
+          </svg>
+        </div>
+      </div>
+
+      <button id="btn-start-sim" class="btn-primary-lg">
+        <span>INICIAR SIMULACIÓN</span> ✨
+      </button>
+
+      <!-- INFORMACIÓN DEL PROYECTO (DISCRETA) -->
+      <div class="project-info-card">
+        <div class="info-grid">
+          <div><strong>Estudiante:</strong> Yajaira Garcia Valencia</div>
+          <div><strong>Institución:</strong> CEUNI</div>
+          <div><strong>Docente:</strong> Luis Eduardo Ek León</div>
+          <div><strong>Asignatura:</strong> Química Orgánica III</div>
+          <div><strong>Fecha:</strong> 05 de octubre de 2026</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- BARRA DE NAVEGACIÓN SUPERIOR Y CONTROLES -->
+  <header class="app-header">
+    <div class="header-left">
+      <span class="header-logo">🏁 SN1 vs SN2: Reaction Race</span>
+    </div>
+    <div class="header-right">
+      <button id="btn-audio-toggle" class="btn-icon" title="Activar/Silenciar Sonido">
+        🔊 <span id="audio-status-text">Sonido ON</span>
+      </button>
+      <button id="btn-restart-app" class="btn-secondary-sm">🔄 Reiniciar</button>
+    </div>
+  </header>
+
+  <!-- CONTENEDOR PRINCIPAL DE LA SIMULACIÓN -->
+  <main id="main-simulation" class="main-container hidden">
+
+    <!-- 1. PISTA DE CARRERA (SIEMPRE VISIBLE ARRIBA) -->
+    <section class="section-card race-track-section">
+      <div class="section-header">
+        <h2>🏎️ PISTA DE CARRERA DE REACCIÓN</h2>
+        <span class="meta-flag">🏁 META (10 Posiciones)</span>
+      </div>
+
+      <div class="track-container">
+        <!-- MARCAS DE DISTANCIA/POSICIÓN -->
+        <div class="track-markers">
+          <span>Salida</span>
+          <span>1</span><span>2</span><span>3</span><span>4</span><span>5</span>
+          <span>6</span><span>7</span><span>8</span><span>9</span>
+          <span class="finish-text">META 🏁</span>
+        </div>
+
+        <!-- CARRIL SUPERIOR SN1 -->
+        <div class="lane lane-sn1" id="lane-sn1">
+          <div class="lane-badge">SN1 🎀</div>
+          <div class="lane-road">
+            <div class="finish-line"></div>
+            <div id="car-sn1" class="car car-sn1">
+              <div class="car-adv-pop" id="pop-sn1">+1</div>
+              <svg viewBox="0 0 160 65" class="car-svg">
+                <defs>
+                  <linearGradient id="bodySn1" x1="0%" y1="0%" x2="100%" y2="0%">
+                    <stop offset="0%" stop-color="#FFF8FB" />
+                    <stop offset="30%" stop-color="#F4B6C2" />
+                    <stop offset="75%" stop-color="#E27D9A" />
+                    <stop offset="100%" stop-color="#C9B6E4" />
+                  </linearGradient>
+                  <linearGradient id="glassSn1" x1="0%" y1="0%" x2="100%" y2="100%">
+                    <stop offset="0%" stop-color="#3F3A45" stop-opacity="0.9" />
+                    <stop offset="100%" stop-color="#9A72A4" stop-opacity="0.8" />
+                  </linearGradient>
+                </defs>
+                <!-- Sombra -->
+                <ellipse cx="80" cy="56" rx="70" ry="6" fill="#3F3A45" opacity="0.25"/>
+                <!-- Carrocería principal -->
+                <path d="M 12 40 L 25 38 L 45 28 C 65 20, 95 20, 115 30 L 140 36 C 148 38, 155 42, 155 48 C 155 52, 145 54, 130 54 L 20 54 C 10 54, 5 48, 12 40 Z" fill="url(#bodySn1)"/>
+                <!-- Parabrisas / Techo -->
+                <path d="M 50 28 C 65 21, 90 21, 105 29 C 100 35, 60 36, 50 28 Z" fill="url(#glassSn1)"/>
+                <!-- Spoiler trasero -->
+                <path d="M 8 28 L 22 28 L 20 38 L 10 38 Z" fill="#E27D9A"/>
+                <rect x="6" y="24" width="16" height="4" rx="2" fill="#C9B6E4"/>
+                <!-- Ruedas -->
+                <circle cx="35" cy="52" r="11" fill="#3F3A45"/>
+                <circle cx="35" cy="52" r="6" fill="#EAE6EE"/>
+                <circle cx="125" cy="52" r="11" fill="#3F3A45"/>
+                <circle cx="125" cy="52" r="6" fill="#EAE6EE"/>
+                <!-- Faro delantero LED -->
+                <polygon points="148,40 155,42 153,46 146,44" fill="#FFFDF9"/>
+                <!-- ESTAMPADOS: Moñito side, Florecita hood, Texto SN1 -->
+                <g transform="translate(68, 38) scale(0.6)">
+                  <path d="M -8 -6 C -15 -12, -15 0, -3 -2 C -15 2, -15 12, -8 6 Z" fill="#FFFDF9"/>
+                  <path d="M 8 -6 C 15 -12, 15 0, 3 -2 C 15 2, 15 12, 8 6 Z" fill="#FFFDF9"/>
+                  <circle cx="0" cy="0" r="3" fill="#E27D9A"/>
+                </g>
+                <g transform="translate(42, 34) scale(0.5)">
+                  <circle cx="-5" cy="-3" r="4" fill="#FFFDF9" opacity="0.9"/>
+                  <circle cx="5" cy="-3" r="4" fill="#FFFDF9" opacity="0.9"/>
+                  <circle cx="0" cy="5" r="4" fill="#FFFDF9" opacity="0.9"/>
+                  <circle cx="-4" cy="2" r="4" fill="#FFFDF9" opacity="0.9"/>
+                  <circle cx="4" cy="2" r="4" fill="#FFFDF9" opacity="0.9"/>
+                  <circle cx="0" cy="0" r="3" fill="#F4B6C2"/>
+                </g>
+                <text x="92" y="46" font-family="sans-serif" font-weight="900" font-size="10" fill="#3F3A45" opacity="0.8">SN1</text>
+              </svg>
+            </div>
+          </div>
+        </div>
+
+        <!-- CARRIL INFERIOR SN2 -->
+        <div class="lane lane-sn2" id="lane-sn2">
+          <div class="lane-badge">SN2 🌸</div>
+          <div class="lane-road">
+            <div class="finish-line"></div>
+            <div id="car-sn2" class="car car-sn2">
+              <div class="car-adv-pop" id="pop-sn2">+1</div>
+              <svg viewBox="0 0 160 65" class="car-svg">
+                <defs>
+                  <linearGradient id="bodySn2" x1="0%" y1="0%" x2="100%" y2="0%">
+                    <stop offset="0%" stop-color="#F0FAF8" />
+                    <stop offset="35%" stop-color="#AFCBFF" />
+                    <stop offset="70%" stop-color="#B8D8C0" />
+                    <stop offset="100%" stop-color="#D8C2F0" />
+                  </linearGradient>
+                  <linearGradient id="glassSn2" x1="0%" y1="0%" x2="100%" y2="100%">
+                    <stop offset="0%" stop-color="#3F3A45" stop-opacity="0.9" />
+                    <stop offset="100%" stop-color="#7B9ECC" stop-opacity="0.8" />
+                  </linearGradient>
+                </defs>
+                <!-- Sombra -->
+                <ellipse cx="80" cy="56" rx="70" ry="6" fill="#3F3A45" opacity="0.25"/>
+                <!-- Carrocería principal -->
+                <path d="M 12 40 L 25 38 L 45 28 C 65 20, 95 20, 115 30 L 140 36 C 148 38, 155 42, 155 48 C 155 52, 145 54, 130 54 L 20 54 C 10 54, 5 48, 12 40 Z" fill="url(#bodySn2)"/>
+                <!-- Parabrisas / Techo -->
+                <path d="M 50 28 C 65 21, 90 21, 105 29 C 100 35, 60 36, 50 28 Z" fill="url(#glassSn2)"/>
+                <!-- Spoiler trasero -->
+                <path d="M 8 28 L 22 28 L 20 38 L 10 38 Z" fill="#7B9ECC"/>
+                <rect x="6" y="24" width="16" height="4" rx="2" fill="#B8D8C0"/>
+                <!-- Ruedas -->
+                <circle cx="35" cy="52" r="11" fill="#3F3A45"/>
+                <circle cx="35" cy="52" r="6" fill="#EAE6EE"/>
+                <circle cx="125" cy="52" r="11" fill="#3F3A45"/>
+                <circle cx="125" cy="52" r="6" fill="#EAE6EE"/>
+                <!-- Faro delantero LED -->
+                <polygon points="148,40 155,42 153,46 146,44" fill="#FFFDF9"/>
+                <!-- ESTAMPADOS: Florecita side, Moñito rear, Texto SN2 -->
+                <g transform="translate(65, 36) scale(0.6)">
+                  <circle cx="-5" cy="-3" r="4" fill="#FFFDF9" opacity="0.95"/>
+                  <circle cx="5" cy="-3" r="4" fill="#FFFDF9" opacity="0.95"/>
+                  <circle cx="0" cy="5" r="4" fill="#FFFDF9" opacity="0.95"/>
+                  <circle cx="-4" cy="2" r="4" fill="#FFFDF9" opacity="0.95"/>
+                  <circle cx="4" cy="2" r="4" fill="#FFFDF9" opacity="0.95"/>
+                  <circle cx="0" cy="0" r="3" fill="#AFCBFF"/>
+                </g>
+                <g transform="translate(100, 38) scale(0.5)">
+                  <path d="M -8 -6 C -15 -12, -15 0, -3 -2 C -15 2, -15 12, -8 6 Z" fill="#FFFDF9"/>
+                  <path d="M 8 -6 C 15 -12, 15 0, 3 -2 C 15 2, 15 12, 8 6 Z" fill="#FFFDF9"/>
+                  <circle cx="0" cy="0" r="3" fill="#B8D8C0"/>
+                </g>
+                <text x="42" y="46" font-family="sans-serif" font-weight="900" font-size="10" fill="#3F3A45" opacity="0.8">SN2</text>
+              </svg>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="track-status-bar">
+        <span>Posición SN1: <strong id="sn1-pos-text">0/10</strong></span>
+        <span>Posición SN2: <strong id="sn2-pos-text">0/10</strong></span>
+      </div>
+    </section>
+
+    <!-- 2. PREGUNTA ACTUAL Y PANEL DE RESPUESTA -->
+    <section class="section-card question-section">
+      <div class="question-header">
+        <span id="question-number-tag" class="q-badge">Pregunta 1 de 11</span>
+        <span id="question-type-tag" class="q-type-normal">Mecanismo: SN1</span>
+      </div>
+
+      <h3 id="question-text" class="question-title">¿Cargando pregunta...?</h3>
+
+      <!-- OPCIONES DE RESPUESTA -->
+      <div id="options-container" class="options-grid">
+        <!-- Generadas dinámicamente -->
+      </div>
+
+      <!-- BOTÓN RESPONDER -->
+      <div class="action-bar">
+        <button id="btn-submit-answer" class="btn-primary" disabled>RESPONDER</button>
+      </div>
+
+      <!-- FEEDBACK Y EXPLICACIÓN POST-RESPUESTA -->
+      <div id="feedback-panel" class="feedback-panel hidden">
+        <div id="feedback-status" class="feedback-status">CORRECTO ✨</div>
+        <p id="feedback-explanation" class="feedback-explanation">Explicación aquí...</p>
+        <div class="feedback-adv-info" id="feedback-adv-info">🏆 ¡Carro SN1 avanza +1 posición!</div>
+        <button id="btn-next-question" class="btn-accent">SIGUIENTE PREGUNTA ➔</button>
+      </div>
+    </section>
+
+    <!-- 3. EL MOTOR DE LA REACCIÓN -->
+    <section class="section-card engine-section">
+      <div class="section-header">
+        <h2>🧪 EL MOTOR DE LA REACCIÓN</h2>
+        <p class="subtitle">Modifica los factores experimentales para simular el comportamiento cinético.</p>
+      </div>
+
+      <div class="engine-controls-grid">
+        <!-- SUSTRATO -->
+        <div class="control-group">
+          <label class="control-label">Sustrato (R-X):</label>
+          <select id="select-substrate" class="custom-select">
+            <option value="tertiary">Terciario (3°)</option>
+            <option value="secondary">Secundario (2°)</option>
+            <option value="primary">Primario (1°)</option>
+          </select>
+        </div>
+
+        <!-- NUCLEÓFILO -->
+        <div class="control-group">
+          <label class="control-label">Nucleófilo (Nu⁻):</label>
+          <select id="select-nucleophile" class="custom-select">
+            <option value="strong">Fuerte (ej. HO⁻, CH₃O⁻, CN⁻)</option>
+            <option value="weak">Débil (ej. H₂O, CH₃OH)</option>
+          </select>
+        </div>
+
+        <!-- DISOLVENTE -->
+        <div class="control-group">
+          <label class="control-label">Disolvente:</label>
+          <select id="select-solvent" class="custom-select">
+            <option value="polar_protic">Polar Prótico (Agua, Etanol)</option>
+            <option value="polar_aprotic">Polar Aprótico (DMSO, Acetona, DMF)</option>
+          </select>
+        </div>
+
+        <!-- GRUPO SALIENTE -->
+        <div class="control-group">
+          <label class="control-label">Grupo Saliente (X⁻):</label>
+          <select id="select-leaving" class="custom-select">
+            <option value="good">Buen grupo saliente (I⁻, Br⁻, TsO⁻)</option>
+            <option value="poor">Mal grupo saliente (F⁻, HO⁻)</option>
+          </select>
+        </div>
+      </div>
+
+      <button id="btn-analyze-reaction" class="btn-primary-engine">⚡ ANALIZAR REACCIÓN</button>
+    </section>
+
+    <!-- 4. PREDICCIÓN DINÁMICA -->
+    <section class="section-card prediction-section">
+      <div class="section-header">
+        <h2>📊 PREDICCIÓN DINÁMICA</h2>
+      </div>
+
+      <div class="prediction-results-grid">
+        <div class="pred-score-card pred-sn1">
+          <h3>Puntuación SN1</h3>
+          <div id="score-sn1-val" class="score-num">0 pts</div>
+        </div>
+
+        <div class="pred-score-card pred-sn2">
+          <h3>Puntuación SN2</h3>
+          <div id="score-sn2-val" class="score-num">0 pts</div>
+        </div>
+
+        <div class="pred-winner-card">
+          <h3>Mecanismo Preferente</h3>
+          <div id="pred-winner-text" class="winner-title">SN1</div>
+        </div>
+      </div>
+
+      <div class="pred-explanation-box">
+        <h4>Explicación del Análisis Químico:</h4>
+        <p id="pred-explanation-text">Presiona "ANALIZAR REACCIÓN" para evaluar las condiciones seleccionadas.</p>
+      </div>
+
+      <!-- VISUALIZACIÓN DE ANIMACIÓN DE MECANISMO -->
+      <div class="mechanism-visualizer">
+        <h3>Visualización Molecular Animada</h3>
+        <div id="mechanism-animation-container" class="mech-anim-box">
+          <!-- Dibujado dinámicamente con JS/SVG -->
+        </div>
+      </div>
+    </section>
+
+    <!-- 5. PERFIL ENERGÉTICO COMPARATIVO -->
+    <section class="section-card energy-section">
+      <div class="section-header">
+        <h2>📈 PERFIL ENERGÉTICO (SN1 vs SN2)</h2>
+      </div>
+
+      <div class="energy-chart-container">
+        <svg viewBox="0 0 600 280" class="energy-svg">
+          <!-- Ejes -->
+          <line x1="50" y1="230" x2="550" y2="230" stroke="#3F3A45" stroke-width="2" />
+          <line x1="50" y1="230" x2="50" y2="30" stroke="#3F3A45" stroke-width="2" />
+          <text x="300" y="265" font-size="12" fill="#3F3A45" text-anchor="middle">Coordenada de Reacción</text>
+          <text x="25" y="130" font-size="12" fill="#3F3A45" text-anchor="middle" transform="rotate(-90 25 130)">Energía Libre (ΔG)</text>
+
+          <!-- Curva SN2 (1 Barrera) -->
+          <path d="M 60 200 C 180 30, 240 30, 360 210" fill="none" stroke="#AFCBFF" stroke-width="4" stroke-dasharray="6,3" />
+          <circle cx="210" cy="70" r="5" fill="#AFCBFF" />
+          <text x="210" y="50" font-size="11" font-weight="bold" fill="#3F3A45" text-anchor="middle">ET (SN2) [Concertado]</text>
+
+          <!-- Curva SN1 (2 Barreras + Carbocatión) -->
+          <path d="M 60 200 C 120 40, 160 80, 200 140 C 240 160, 260 90, 360 210" fill="none" stroke="#E27D9A" stroke-width="4" />
+          <circle cx="140" cy="80" r="5" fill="#E27D9A" />
+          <circle cx="200" cy="140" r="5" fill="#C9B6E4" />
+          <circle cx="270" cy="110" r="5" fill="#E27D9A" />
+
+          <text x="140" y="60" font-size="10" font-weight="bold" fill="#3F3A45" text-anchor="middle">ET1</text>
+          <text x="200" y="160" font-size="11" font-weight="bold" fill="#9A72A4" text-anchor="middle">Carbocatión (Intermediario)</text>
+          <text x="270" y="90" font-size="10" font-weight="bold" fill="#3F3A45" text-anchor="middle">ET2</text>
+        </svg>
+      </div>
+
+      <div class="chart-legend">
+        <span class="legend-item"><span class="color-dot sn1-dot"></span> <strong>SN1:</strong> 2 Barreras energéticas, 2 Estados de Transición, 1 Intermediario plano.</span>
+        <span class="legend-item"><span class="color-dot sn2-dot"></span> <strong>SN2:</strong> 1 Barrera energética, 1 Estado de Transición, Sin intermediario.</span>
+      </div>
+    </section>
+
+    <!-- 6. ESTEREOQUÍMICA Y CINÉTICA -->
+    <section class="section-card stereochem-section">
+      <div class="section-header">
+        <h2>🧪 ESTEREOQUÍMICA Y CINÉTICA</h2>
+      </div>
+
+      <div class="stereo-grid">
+        <!-- SN1 ESTEREOQUÍMICA -->
+        <div class="stereo-card card-sn1">
+          <h3>SN1: Estereoquímica y Cinética</h3>
+          <p><strong>Especie clave:</strong> Carbocatión trigonal plano ($sp^2$).</p>
+          <p><strong>Ataque:</strong> El nucleófilo puede atacar por ambas caras (50% cara frontal / 50% cara posterior).</p>
+          <p><strong>Resultado:</strong> Racemización (mezcla de enantiómeros / producto no ópticamente activo).</p>
+          <div class="formula-box">Cinética Unimolecular: v = k [Sustrato]</div>
+        </div>
+
+        <!-- SN2 ESTEREOQUÍMICA -->
+        <div class="stereo-card card-sn2">
+          <h3>SN2: Estereoquímica y Cinética</h3>
+          <p><strong>Especie clave:</strong> Estado de transición pentacoordinado.</p>
+          <p><strong>Ataque:</strong> Ataque dorsal (dorsal attack) 100% por la cara opuesta al grupo saliente.</p>
+          <p><strong>Resultado:</strong> Inversión de configuración (Inversión de Walden - efecto "paraguas").</p>
+          <div class="formula-box">Cinética Bimolecular: v = k [Sustrato] [Nucleófilo]</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 7. GLOSARIO EDUCATIVO E INTERACTIVO -->
+    <section class="section-card glossary-section">
+      <div class="section-header">
+        <h2>📚 TARJETAS EDUCATIVAS RÁPIDAS</h2>
+      </div>
+
+      <div class="glossary-grid">
+        <div class="tooltip-card">
+          <h4>Sustrato (R-X)</h4>
+          <p>Molécula orgánica que contiene un carbono electrófilo unido a un grupo saliente.</p>
+        </div>
+        <div class="tooltip-card">
+          <h4>Nucleófilo (Nu⁻)</h4>
+          <p>Especie rica en electrones que busca un centro positivo (carbocatión o carbono parcial positivo).</p>
+        </div>
+        <div class="tooltip-card">
+          <h4>Grupo Saliente (X⁻)</h4>
+          <p>Átomo o grupo de átomos que se desprende con el par de electrones del enlace.</p>
+        </div>
+        <div class="tooltip-card">
+          <h4>Disolvente Polar Prótico</h4>
+          <p>Disolvente capaz de formar puentes de hidrógeno (Agua, Etanol); estabiliza el carbocatión en SN1.</p>
+        </div>
+        <div class="tooltip-card">
+          <h4>Disolvente Polar Aprótico</h4>
+          <p>Disolvente sin H ácidos (Acetona, DMSO, DMF); no solvata fuertemente al nucleófilo, favoreciendo SN2.</p>
+        </div>
+        <div class="tooltip-card">
+          <h4>Inversión de Walden</h4>
+          <p>Inversión completa de la geometría estereoatómica en el centro quiral durante el mecanismo SN2.</p>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- PANTALLA DE RESULTADO FINAL DE LA CARRERA -->
+  <div id="results-modal" class="modal-overlay hidden">
+    <div class="modal-card">
+      <div class="modal-header">
+        <span class="trophy-icon">🏆</span>
+        <h2>RESULTADO DE LA CARRERA</h2>
+      </div>
+
+      <div class="winner-announcement">
+        <h3 id="final-winner-title">¡GANADOR: SN1!</h3>
+        <p id="final-winner-subtitle">SN1 fue el primer vehículo en cruzar la línea de meta.</p>
+      </div>
+
+      <div class="stats-grid">
+        <div class="stat-box">
+          <span class="stat-num" id="stat-correct">0/11</span>
+          <span class="stat-lbl">Aciertos Totales</span>
+        </div>
+        <div class="stat-box">
+          <span class="stat-num" id="stat-sn1-pos">0</span>
+          <span class="stat-lbl">Posición Final SN1</span>
+        </div>
+        <div class="stat-box">
+          <span class="stat-num" id="stat-sn2-pos">0</span>
+          <span class="stat-lbl">Posición Final SN2</span>
+        </div>
+      </div>
+
+      <div class="chem-summary-box">
+        <h4>Análisis Químico Global:</h4>
+        <p id="final-chem-summary">Cargando resumen de la reacción...</p>
+      </div>
+
+      <button id="btn-restart-game" class="btn-primary-lg">✨ VOLVER A JUGAR</button>
+    </div>
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html>
